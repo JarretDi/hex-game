@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import model.Character.CharacterActions.GameAction;
+import model.Inventory.Inventory;
+import model.Inventory.items.Item;
 
 public class Character {
     private String name;
@@ -13,6 +15,11 @@ public class Character {
     private int level;
     private double maxHp;
     private double hp;
+
+    private Inventory inventory;
+
+    private Item mainhandItem;
+    private Item offhandItem;
 
     // EFFECTS: Constructs a character with a given name and class, with zero levels and full hp
     public Character(String name, ClassRole classRole) {

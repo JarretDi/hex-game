@@ -1,10 +1,23 @@
 package model.Character.CharacterActions;
 
+import java.util.Set;
+
 /*
  * Class that represents the actions a character can take during the game
  */
-public interface GameAction {
-    public String getActionName();
+public abstract class GameAction {
+    private String actionName;
 
-    public void doAction(Character character);
+    // EFFECTS: Constructs an action with given name
+    public GameAction(String actionName) {
+        this.actionName = actionName;
+    }
+
+    // EFFECTS: Does the action
+    public abstract void doAction(Character giver, Set<Character> receivers);
+
+
+    public String getActionName() {
+        return actionName;
+    }
 }
