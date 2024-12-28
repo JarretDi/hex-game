@@ -9,10 +9,15 @@ import java.util.Map;
 import java.util.Set;
 
 public class GameMap {
-    private Map<Tile, Tile> map;
+    private static final int[] VECTOR_X_POS = {1,-1,0};
+    private static final int[] VECTOR_Y_POS = {1,0,-1};
+    private static final int[] VECTOR_Z_POS = {0,1,-1};
+    private static final int[] VECTOR_X_NEG = {-1,1,0};
+    private static final int[] VECTOR_Y_NEG = {-1,0,1};
+    private static final int[] VECTOR_Z_NEG = {0,-1,1};
+    private static final int[][] VECTORS = {VECTOR_X_POS, VECTOR_Y_POS, VECTOR_Z_POS, VECTOR_X_NEG, VECTOR_Y_NEG, VECTOR_Z_NEG};
 
-    private static final int[][] basisVectors = {{1,-1,0},{0,1,-1},{1,0,-1}};
-    private static final int[][] vectors = {{1,-1,0},{0,1,-1},{-1,0,1},{-1,1,0},{0,-1,1},{1,0,-1}};
+    private Map<Tile, Tile> map;
 
     public GameMap(int maxX, int maxY, int maxZ, TileGenerator tileGenerator) {
         map = new HashMap<>();
@@ -67,28 +72,38 @@ public class GameMap {
         return getNeighbours(tile, 0, 1);
     }
 
+    // Helper for getNeighbours
     private void addNeibouringTiles(Tile tile, Set<Tile> ret, int length) {
         if (length == 0) {
             return;
         } else {
             for (int i = 0; i < 6; i++) {
-                Tile newPosTile = new Tile(tile.getX() + vectors[i][0], tile.getY() + vectors[i][1], tile.getZ() + vectors[i][2]);
+                Tile newPosTile = new Tile(tile.getX() + VECTORS[i][0], tile.getY() + VECTORS[i][1], tile.getZ() + VECTORS[i][2]);
                 ret.add(getTile(newPosTile));
                 addNeibouringTiles(newPosTile, ret, length - 1);
             }
         }
     }
 
+    // Helper for getNeighbours
     private void removeNeibouringTiles(Tile tile, Set<Tile> ret, int length) {
         if (length == 0) {
             return;
         } else {
             for (int i = 0; i < 6; i++) {
-                Tile newPosTile = new Tile(tile.getX() + vectors[i][0], tile.getY() + vectors[i][1], tile.getZ() + vectors[i][2]);
+                Tile newPosTile = new Tile(tile.getX() + VECTORS[i][0], tile.getY() + VECTORS[i][1], tile.getZ() + VECTORS[i][2]);
                 ret.remove(getTile(newPosTile));
                 removeNeibouringTiles(newPosTile, ret, length - 1);
             }
         }
+    }
+
+    // REQUIRES: directionVector is in VECTORS, distance > 0
+    // EFFECTS: returns a set of tiles in the given direction within a certain distance
+    public Set<Tile> getLine(Tile tile, int[] directionVector, int distance) {
+        Set<Tile> ret = new HashSet<>();
+
+        return ret;
     }
 
     public Tile getTile(int x, int y, int z) {
