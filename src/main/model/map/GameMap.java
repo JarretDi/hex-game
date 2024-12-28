@@ -1,21 +1,19 @@
 package main.model.map;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public class GameMap {
-    private static final int[] VECTOR_X_POS = {1,-1,0};
-    private static final int[] VECTOR_Y_POS = {1,0,-1};
-    private static final int[] VECTOR_Z_POS = {0,1,-1};
-    private static final int[] VECTOR_X_NEG = {-1,1,0};
-    private static final int[] VECTOR_Y_NEG = {-1,0,1};
-    private static final int[] VECTOR_Z_NEG = {0,-1,1};
-    private static final int[][] VECTORS = {VECTOR_X_POS, VECTOR_Y_POS, VECTOR_Z_POS, VECTOR_X_NEG, VECTOR_Y_NEG, VECTOR_Z_NEG};
+    public static final int[] VECTOR_X_POS = { 1, -1, 0 };
+    public static final int[] VECTOR_Y_POS = { 1, 0, -1 };
+    public static final int[] VECTOR_Z_POS = { 0, 1, -1 };
+    public static final int[] VECTOR_X_NEG = { -1, 1, 0 };
+    public static final int[] VECTOR_Y_NEG = { -1, 0, 1 };
+    public static final int[] VECTOR_Z_NEG = { 0, -1, 1 };
+    public static final int[][] VECTORS = { VECTOR_X_POS, VECTOR_Y_POS, VECTOR_Z_POS,
+            VECTOR_X_NEG, VECTOR_Y_NEG, VECTOR_Z_NEG };
 
     private Map<Tile, Tile> map;
 
@@ -41,8 +39,10 @@ public class GameMap {
         }
     }
 
-    // EFFECTS: returns the set of tiles that neighbour the one given within a certain distance
-    // if minDistance < 0 or maxDistance is < 1 or minDistance > maxDistance throws IllegalArgumentException
+    // EFFECTS: returns the set of tiles that neighbour the one given within a
+    // certain distance
+    // if minDistance < 0 or maxDistance is < 1 or minDistance > maxDistance throws
+    // IllegalArgumentException
     // if tile is not in set, then throws TileNotFoundException
     public Set<Tile> getNeighbours(Tile tile, int minDistance, int maxDistance) {
         if (minDistance < 0 || maxDistance < 1 || minDistance > maxDistance) {
@@ -55,7 +55,7 @@ public class GameMap {
         Set<Tile> ret = new HashSet<>();
 
         addNeibouringTiles(tile, ret, maxDistance);
-        
+
         ret.remove(tile);
         ret.remove(null);
 
@@ -78,7 +78,10 @@ public class GameMap {
             return;
         } else {
             for (int i = 0; i < 6; i++) {
-                Tile newPosTile = new Tile(tile.getX() + VECTORS[i][0], tile.getY() + VECTORS[i][1], tile.getZ() + VECTORS[i][2]);
+                Tile newPosTile = new Tile(
+                        tile.getX() + VECTORS[i][0],
+                        tile.getY() + VECTORS[i][1],
+                        tile.getZ() + VECTORS[i][2]);
                 ret.add(getTile(newPosTile));
                 addNeibouringTiles(newPosTile, ret, length - 1);
             }
@@ -91,7 +94,10 @@ public class GameMap {
             return;
         } else {
             for (int i = 0; i < 6; i++) {
-                Tile newPosTile = new Tile(tile.getX() + VECTORS[i][0], tile.getY() + VECTORS[i][1], tile.getZ() + VECTORS[i][2]);
+                Tile newPosTile = new Tile(
+                        tile.getX() + VECTORS[i][0],
+                        tile.getY() + VECTORS[i][1],
+                        tile.getZ() + VECTORS[i][2]);
                 ret.remove(getTile(newPosTile));
                 removeNeibouringTiles(newPosTile, ret, length - 1);
             }
@@ -99,9 +105,19 @@ public class GameMap {
     }
 
     // REQUIRES: directionVector is in VECTORS, distance > 0
-    // EFFECTS: returns a set of tiles in the given direction within a certain distance
+    // EFFECTS: returns a set of tiles in the given direction within a certain
+    // distance
     public Set<Tile> getLine(Tile tile, int[] directionVector, int distance) {
         Set<Tile> ret = new HashSet<>();
+
+        for (int i = 1; i <= distance; i++) {
+            ret.add(getTile(new Tile(
+                    tile.getX() + directionVector[0] * i,
+                    tile.getY() + directionVector[1] * i,
+                    tile.getZ() + directionVector[2] * i)));
+        }
+
+        ret.remove(null);
 
         return ret;
     }
