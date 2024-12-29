@@ -4,19 +4,20 @@ import java.util.HashSet;
 import java.util.Set;
 
 import main.model.Character.CharacterActions.GameAction;
+import main.model.GameComponents.Damagable;
 import main.model.Inventory.Inventory;
 import main.model.Inventory.items.Item;
 import main.model.map.GameMap;
 import main.model.map.Tile;
 
-public class Character {
+public class Character implements Damagable {
     private String name;
+    private Statboard stats;
     private ClassRole classRole;
     private Set<GameAction> characterActions;
 
-    private int level;
     private double maxHp;
-    private double hp;
+    private double health;
 
     private Inventory inventory;
     private Tile position;
@@ -24,18 +25,18 @@ public class Character {
     private Item mainhandItem;
     private Item offhandItem;
 
-    // EFFECTS: Constructs a character with a given name and class, with zero levels and full hp
+    // EFFECTS: Constructs a character with a given name and class, with a statboard and full hp
     public Character(String name, ClassRole classRole, Tile position) {
         this.name = name;
+        this.stats = new Statboard(this);
         this.classRole = classRole;
 
         this.inventory = new Inventory(this);
 
-        this.level = 0;
         this.position = position;
 
         this.maxHp = Statboard.getMaxHpFromLevel();
-        this.hp = maxHp;
+        this.health = maxHp;
 
         this.characterActions = new HashSet<>();
         addActions();
@@ -49,22 +50,23 @@ public class Character {
         
     }
 
+    // EFFECTS: returns the damage a character should do given their statboards and weapons
+    public Damage getDamage() {
+        return new Damage(stats.getStat(Statboard.STRENGTH), null);
+    }
+
     // MODIFIES: this
     // EFFECTS: updates health to the given damage
     public void takeDamage(Damage dmg) {
-
+        
     }
 
     public String getName() {
         return name;
     }
 
-    public int getLevel() {
-        return level;
-    }
-
     public double getPercentHp() {
-        return hp / maxHp;
+        return health / maxHp;
     }
 
     public Tile getPosition() {
@@ -92,7 +94,17 @@ public class Character {
     }
 
     public Boolean isOnMap(GameMap map) {
-        // TODO: when tiles are linked to maps
-        return position != null;
+        return position != null && position.getMap() == map;
+    }
+
+    @Override
+    public double getHealth() {
+        return health;
+    }
+
+    @Override
+    public void onDestroy() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'onDestroy'");
     }
 }

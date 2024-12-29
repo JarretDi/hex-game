@@ -37,24 +37,7 @@ public class ItemCreator {
     }
 
     // EFFECT: helper that creates and returns an item based on only name and type
-    public static Item createItemFromInput(String name, String type) throws InvalidTypeException {
-        switch (type) {
-            case "Weapon":
-            case "w":
-                return new Weapon(name);
-            case "Armour":
-            case "a":
-                return new Armour(name);
-            case "Consumable":
-                return new Consumable(name);
-            case "Currency":
-                return new Currency(name);
-            case "Misc":
-            case "m":
-            case "":
-                return new Misc(name);
-            default:
-                throw new InvalidTypeException();
-        }
+    public static Item createItemFromInput(String name, String type) throws InvalidNumberException, InvalidTypeException {
+        return createItemFromInput(name, type, 0, 0, "", false);
     }
 }

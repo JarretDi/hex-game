@@ -26,7 +26,6 @@ public class testCharacter {
         assertEquals("test character", testCharacter.getName());
         // TODO: test class
 
-        assertEquals(0, testCharacter.getLevel());
         // TODO: test statboard
         // TODO: test hp
         // TODO: test actions
@@ -52,6 +51,7 @@ public class testCharacter {
 
     @Test
     void testTakeDamage() {
+        // TODO: when hp is decided
         Damage damage = new Damage(10, DamageType.Sharp);
     }
 }

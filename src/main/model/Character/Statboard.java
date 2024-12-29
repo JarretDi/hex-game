@@ -1,26 +1,32 @@
 package main.model.Character;
 
 public class Statboard {
+    private Character character;
+
     private int level;
+    private int[] stats;
 
-    private int vitality;
-    private int focus;
+    public static final int VITALITY = 0;
+    public static final int WILLPOWER = 1;
+    public static final int AGILITY = 2;
 
-    private int strength;
-    private int agility;
-    private int wits;
+    public static final int STRENGTH = 3;
+    public static final int MAGIC = 4;
+    public static final int TECHNIQUE = 5;
 
-    private int charm;
+    public static final int CHARM = 6;
+    public static final int CUNNING = 7;
+    public static final int LUCK = 8;
 
-    public Statboard(int level, int vitality, int focus, int strength, int agility, int wits, int charm) {
+    public Statboard(Character character, int level, int vitality, int willpower, int agility, int strength, int magic, int technique, int charm, int cunning, int luck) {
+        this.character = character;
         this.level = level;
 
-        this.vitality = vitality;
-        this.focus = focus;
-        this.strength = strength;
-        this.agility = agility;
-        this.wits = wits;
-        this.charm = charm;
+        stats = new int[]{vitality, willpower, agility, strength, magic, technique, charm, cunning, luck};
+    }
+
+    public Statboard(Character character) {
+        this(character, 0,0,0,0,0,0,0,0,0,0);
     }
 
     public static double getMaxHpFromLevel() {
@@ -35,58 +41,17 @@ public class Statboard {
         level++;
     }
 
-    public int getVitality() {
-        return vitality;
-    }
+    // REQUIRES: stat is an integer from 0-8
+    // EFFECTS: returns the stat associated with the given stats
+   public int getStat(int stat) {
+        return stats[stat];
+   }
 
-    public void setVitality(int newVitality) {
-        if (newVitality < 0) throw new IllegalArgumentException();
-        this.vitality = newVitality;
-    } 
-
-    public int getFocus() {
-        return focus;
-    }
-
-    public void setFocus(int newFocus) {
-        if (newFocus < 0) throw new IllegalArgumentException();
-        this.focus = newFocus;
-    } 
-
-    public int getStrength() {
-        return strength;
-    }
-
-    public void setStrength(int newStrength) {
-        if (newStrength < 0) throw new IllegalArgumentException();
-        this.strength = newStrength;
-    } 
-
-    public int getAgility() {
-        return agility;
-    }
-
-    public void setAgility(int newAgility) {
-        if (newAgility < 0) throw new IllegalArgumentException();
-        this.agility = newAgility;
-    } 
-
-    public int getWits() {
-        return wits;
-    }
-
-    public void setWits(int newWits) {
-        if (newWits < 0) throw new IllegalArgumentException();
-        this.wits = newWits;
-    } 
-
-    public int getCharm() {
-        return charm;
-    }
-
-    public void setCharm(int newCharm) {
-        if (newCharm < 0) throw new IllegalArgumentException();
-        this.charm = newCharm;
-    } 
+   // REQUIRES: stat is an integer from 0-8, newValue > 0
+   // MODIFIES: this
+   // EFFECTS: sets the given stat to a new value
+   public void setStat(int stat, int newValue) {
+        stats[stat] = newValue;
+   }
 
 }

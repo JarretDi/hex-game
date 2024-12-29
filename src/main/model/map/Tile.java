@@ -54,8 +54,12 @@ public class Tile {
     }
 
     // EFFECTS: returns true if this tile is passable
+    // A tile is passable if it does not contain:
+    // - a hostile character
+    // - an impassible object
+    // - a mobility restricting effect
     public Boolean isPassable() {
-        // stub
+        // TODO
         return false;
     }
 
@@ -75,13 +79,17 @@ public class Tile {
         return type;
     }
 
+    public GameMap getMap() {
+        return map;
+    }
+
     public Character getCharacter() {
         return character;
     }
 
     // MODIFIES: this
     // EFFECTS: sets this character to given character
-    //          additionally sets newCharacter's position to this
+    // additionally sets newCharacter's position to this
     public void setCharacter(Character newCharacter) {
         if (this.character != newCharacter) {
             this.character = newCharacter;
@@ -135,8 +143,8 @@ public class Tile {
     }
 
     /*
-     * |1 0 0|    |\sqrt3/2   1/2         0|
-     * |0 1 0| -> |1/2        -\sqrt3/2   0|
-     * |0 0 1|    |0          0           1|
+     * |1 0 0| |\sqrt3/2 1/2 0|
+     * |0 1 0| -> |1/2 -\sqrt3/2 0|
+     * |0 0 1| |0 0 1|
      */
 }
