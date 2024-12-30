@@ -1,7 +1,5 @@
 package main.model.GameComponents;
 
-import main.model.Character.Damage;
-
 /*
  * Represent something that has health and can take damage
  */
@@ -11,7 +9,7 @@ public interface Damagable {
 
     // MODIFIES: this
     // EFFECTS: Takes the given damage
-    public void takeDamage(Damage dmg);
+    public void takeDamage(AttackComponent ac);
 
     // MODIFIES: this
     // EFFECTS: Action to take when hp reaches 0

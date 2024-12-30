@@ -1,7 +1,7 @@
 package main.model.Character;
 
 public class Statboard {
-    private Character character;
+    private GameCharacter character;
 
     private int level;
     private int[] stats;
@@ -18,14 +18,14 @@ public class Statboard {
     public static final int CUNNING = 7;
     public static final int LUCK = 8;
 
-    public Statboard(Character character, int level, int vitality, int willpower, int agility, int strength, int magic, int technique, int charm, int cunning, int luck) {
+    public Statboard(GameCharacter character, int level, int vitality, int willpower, int agility, int strength, int magic, int technique, int charm, int cunning, int luck) {
         this.character = character;
         this.level = level;
 
         stats = new int[]{vitality, willpower, agility, strength, magic, technique, charm, cunning, luck};
     }
 
-    public Statboard(Character character) {
+    public Statboard(GameCharacter character) {
         this(character, 0,0,0,0,0,0,0,0,0,0);
     }
 

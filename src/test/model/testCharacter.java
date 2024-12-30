@@ -5,20 +5,18 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import main.model.Character.Character;
-import main.model.Character.Damage;
-import main.model.Character.Damage.DamageType;
+import main.model.Character.GameCharacter;
 import main.model.map.Tile;
 
 public class testCharacter {
-    Character testCharacter;
+    GameCharacter testCharacter;
     Tile testTile;
 
     @BeforeEach
     void setup() {
         
         testTile = new Tile(0, -2, 2);
-        testCharacter =  new Character("test character", null);
+        testCharacter =  new GameCharacter("test character", null);
     }
 
     @Test
@@ -52,6 +50,5 @@ public class testCharacter {
     @Test
     void testTakeDamage() {
         // TODO: when hp is decided
-        Damage damage = new Damage(10, DamageType.Sharp);
     }
 }

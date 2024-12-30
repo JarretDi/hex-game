@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-import main.model.Character.Character;
+import main.model.Character.GameCharacter;
 import main.model.GameComponents.GameComponent;
 
 public class Tile {
@@ -23,7 +23,7 @@ public class Tile {
     private TileType type;
     private GameMap map;
 
-    private Character character;
+    private GameCharacter character;
     private Set<GameComponent> components;
     private Set<TileEffect> tileEffects;
 
@@ -83,14 +83,14 @@ public class Tile {
         return map;
     }
 
-    public Character getCharacter() {
+    public GameCharacter getCharacter() {
         return character;
     }
 
     // MODIFIES: this
     // EFFECTS: sets this character to given character
     // additionally sets newCharacter's position to this
-    public void setCharacter(Character newCharacter) {
+    public void setCharacter(GameCharacter newCharacter) {
         if (this.character != newCharacter) {
             this.character = newCharacter;
             newCharacter.setPosition(this);

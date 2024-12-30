@@ -7,7 +7,7 @@ import org.json.JSONObject;
 
 import main.logger.Event;
 import main.logger.EventLog;
-import main.model.Character.Character;
+import main.model.Character.GameCharacter;
 import main.model.Inventory.exceptions.InvalidSortException;
 import main.model.Inventory.items.Item;
 import main.model.persistence.Writable;
@@ -15,13 +15,13 @@ import main.model.persistence.Writable;
 // Represents the inventory of a character, consisting of an
 // arbitrary amount of items as well as the count of each identical element
 public class Inventory implements Writable {
-    private Character character;
+    private GameCharacter character;
     private ArrayList<Item> inventory;
     private Sort sort;
 
     // EFFECT: creates an unsorted Inventory with no items inside of it, given a
     // character's name
-    public Inventory(Character character) {
+    public Inventory(GameCharacter character) {
         this.character = character;
         this.inventory = new ArrayList<>();
         this.sort = new Sort();
@@ -138,7 +138,7 @@ public class Inventory implements Writable {
                 .logEvent(new Event(initialName + "'s inventory has been set to " + character + "'s inventory."));
     }
 
-    public void setCharacter(Character character) {
+    public void setCharacter(GameCharacter character) {
         this.character = character;
     }
 
@@ -164,7 +164,7 @@ public class Inventory implements Writable {
         EventLog.getInstance().logEvent(new Event("All items have been set to favourite"));
     }
 
-    public Character getCharacter() {
+    public GameCharacter getCharacter() {
         return this.character;
     }
 

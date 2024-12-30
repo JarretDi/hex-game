@@ -1,16 +1,16 @@
 package main.model.Character;
 
-import main.model.Character.CharacterActions.GameAction;
+import main.model.Character.CharacterActions.Doable;
 
 public abstract class ClassRole {
     private String className;
-    private GameAction classAction;
+    private Doable classAction;
     
     public String getClassName() {
         return className;
     }
 
-    public GameAction getClassAction() {
+    public Doable getClassAction() {
         return classAction;
     }
 }
