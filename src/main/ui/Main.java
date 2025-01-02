@@ -1,23 +1,11 @@
 package main.ui;
 
-import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
+import main.model.Board.ChessBoard;
 
-public class Main extends Application {
-
-    @Override
-    public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("Main.fxml"));
-        primaryStage.setTitle("Hello World");
-        primaryStage.setScene(new Scene(root, 400, 300));
-        primaryStage.show();
-    }
-
-
+public class Main {
     public static void main(String[] args) {
-        launch(args);
+        ChessBoard gameMap = new ChessBoard(4, 4, 4);
+        gameMap.printMap();
+        new MapViewer(gameMap);
     }
 }
