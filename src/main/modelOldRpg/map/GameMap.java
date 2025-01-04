@@ -5,8 +5,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import main.modelOldRpg.map.TileNotFoundException;
-
 public class GameMap {
     public static final int[] VECTOR_X_POS = { 1, -1, 0 };
     public static final int[] VECTOR_Y_POS = { 1, 0, -1 };

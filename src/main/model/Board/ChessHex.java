@@ -7,8 +7,6 @@ import main.model.GamePieces.GamePiece;
 public class ChessHex {
     private int[] coords = new int[3];
 
-    private ChessBoard map;
-
     private GamePiece piece;
 
     // EFFECTS: construct a hexagonal tile with given x, y, z coordinates
@@ -23,8 +21,6 @@ public class ChessHex {
         coords[0] = x;
         coords[1] = y;
         coords[2] = z;
-
-        this.map = map;
         
         this.piece = null;
     }
@@ -35,10 +31,6 @@ public class ChessHex {
 
     public int[] getCoords() {
         return coords;
-    }
-
-    public ChessBoard getMap() {
-        return map;
     }
 
     public GamePiece getPiece() {

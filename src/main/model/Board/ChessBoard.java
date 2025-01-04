@@ -31,10 +31,10 @@ public class ChessBoard implements Iterable<ChessHex> {
         VECTOR_DIA_SW, VECTOR_DIA_W, VECTOR_DIA_NW
     };
     
-
+    private static ChessBoard chessBoard = new ChessBoard(5, 5, 5);
     private Map<ChessHex, ChessHex> map;
 
-    public ChessBoard(int maxX, int maxY, int maxZ) {
+    private ChessBoard(int maxX, int maxY, int maxZ) {
         map = new HashMap<>();
         for (int x = -maxX; x <= maxX; x++) {
             for (int y = -maxY; y <= maxY; y++) {
@@ -48,6 +48,10 @@ public class ChessBoard implements Iterable<ChessHex> {
                 }
             }
         }
+    }
+
+    public static ChessBoard getInstance() {
+        return chessBoard;
     }
 
     public void printMap() {

@@ -11,12 +11,10 @@ public abstract class GamePiece {
 
     private ChessHex position;
     private Boolean colour;
-    private ChessBoard board;
 
     public GamePiece(Boolean colour, ChessHex position) {
         this.colour = colour;
         this.position = position;
-        this.board = board;
     }
 
     // Based on the game piece, returns the movable tiles

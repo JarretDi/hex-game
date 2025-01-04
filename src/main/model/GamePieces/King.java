@@ -2,6 +2,7 @@ package main.model.GamePieces;
 
 import java.util.Set;
 
+import main.model.Board.ChessBoard;
 import main.model.Board.ChessHex;
 
 public class King extends GamePiece {
@@ -11,6 +12,14 @@ public class King extends GamePiece {
 
     @Override
     public Set<ChessHex> getMovableHexes() {
-        return getPosition().getMap().getAdjacentTiles(getPosition());
+        ChessBoard cb = ChessBoard.getInstance();
+        ChessHex pos = getPosition();
+
+        Set<ChessHex> adj = cb.getAdjacentTiles(pos);
+        Set<ChessHex> dia = cb.getDiagonalTiles(pos);
+
+        adj.addAll(dia);
+
+        return adj;
     }
 }
