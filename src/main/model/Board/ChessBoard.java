@@ -9,14 +9,28 @@ import java.util.Set;
 import main.modelOldRpg.map.TileNotFoundException;
 
 public class ChessBoard implements Iterable<ChessHex> {
-    public static final int[] VECTOR_X_POS = { 1, -1, 0 };
-    public static final int[] VECTOR_Y_POS = { 1, 0, -1 };
-    public static final int[] VECTOR_Z_POS = { 0, 1, -1 };
-    public static final int[] VECTOR_X_NEG = { -1, 1, 0 };
-    public static final int[] VECTOR_Y_NEG = { -1, 0, 1 };
-    public static final int[] VECTOR_Z_NEG = { 0, -1, 1 };
-    public static final int[][] VECTORS = { VECTOR_X_POS, VECTOR_Y_POS, VECTOR_Z_POS,
-            VECTOR_X_NEG, VECTOR_Y_NEG, VECTOR_Z_NEG };
+    public static final int[] VECTOR_ADJ_N  = { 0, 1, -1 };
+    public static final int[] VECTOR_ADJ_NE = { 1, 0, -1 };
+    public static final int[] VECTOR_ADJ_SE = { 1, -1, 0 };
+    public static final int[] VECTOR_ADJ_S  = { 0, -1, 1 };
+    public static final int[] VECTOR_ADJ_SW = { -1, 1, 0 };
+    public static final int[] VECTOR_ADJ_NW = { -1, 1, 0 };
+    public static final int[][] VECTORS_ADJ = { 
+        VECTOR_ADJ_N, VECTOR_ADJ_NE, VECTOR_ADJ_SE,
+        VECTOR_ADJ_S, VECTOR_ADJ_SW, VECTOR_ADJ_NW 
+    };
+
+    public static final int[] VECTOR_DIA_NE = {  1, -1,  1 };
+    public static final int[] VECTOR_DIA_E  = {  2, -1, -1 };
+    public static final int[] VECTOR_DIA_SE = {  1, -2,  1 };
+    public static final int[] VECTOR_DIA_SW = { -1, -1,  2 };
+    public static final int[] VECTOR_DIA_W =  { -2,  1,  1 };
+    public static final int[] VECTOR_DIA_NW = { -1,  2, -1 };
+    public static final int[][] VECTORS_DIA = {
+        VECTOR_DIA_NE, VECTOR_DIA_E, VECTOR_DIA_SE,
+        VECTOR_DIA_SW, VECTOR_DIA_W, VECTOR_DIA_NW
+    };
+    
 
     private Map<ChessHex, ChessHex> map;
 
@@ -42,91 +56,123 @@ public class ChessBoard implements Iterable<ChessHex> {
         }
     }
 
-    // EFFECTS: returns the set of tiles that neighbour the one given within a
-    // certain distance
-    // if minDistance < 0 or maxDistance is < 1 or minDistance > maxDistance throws
-    // IllegalArgumentException
-    // if tile is not in set, then throws TileNotFoundException
-    public Set<ChessHex> getNeighbours(ChessHex tile, int minDistance, int maxDistance) {
-        if (minDistance < 0 || maxDistance < 1 || minDistance > maxDistance) {
-            throw new IllegalArgumentException();
+    // REQUIRES: v1, v2 have same size
+    // EFFECTS: returns a vector consisted of the two added element-wise
+    private int[] add(int[] v1, int[] v2) {
+        int[] v3 = new int[v1.length];
+
+        for (int i = 0; i < v1.length; i++) {
+            v3[i] = v1[i] + v2[i];
         }
+
+        return v3;
+    }
+
+    // EFFECTS: returns a vector consisted of a vector multiplied by a scalar
+    private int[] mult(int[] v, int scalar) {
+        int[] v2 = new int[v.length];
+
+        for (int i = 0; i < v.length; i++) {
+            v2[i] = v[i] * scalar;
+        }
+
+        return v2;
+    }
+    
+
+    // EFFECTS: returns the set of tiles that are adjacent to a given tile
+    // if tile is not in set, throws TileNotFoundException
+    public Set<ChessHex> getAdjacentTiles(ChessHex tile) {
         if (!map.containsKey(tile)) {
             throw new TileNotFoundException();
         }
 
         Set<ChessHex> ret = new HashSet<>();
 
-        addNeibouringTiles(tile, ret, maxDistance);
+        for (int i = 0; i < 6; i++) {
+            ret.add(getTile(add(tile.getCoords(), VECTORS_ADJ[i])));
+        }
 
-        ret.remove(tile);
         ret.remove(null);
 
-        removeNeibouringTiles(tile, ret, minDistance);
+        return ret;
+    }
+    // EFFECTS: returns the set of tiles that are diagonal to a given tile
+    // if tile is not in set, throws TileNotFoundException
+    public Set<ChessHex> getDiagonalTiles(ChessHex tile) {
+        if (!map.containsKey(tile)) {
+            throw new TileNotFoundException();
+        }
+
+        Set<ChessHex> ret = new HashSet<>();
+
+        for (int i = 0; i < 6; i++) {
+            ret.add(getTile(add(tile.getCoords(), VECTORS_DIA[i])));
+        }
+
+        ret.remove(null);
 
         return ret;
     }
 
-    public Set<ChessHex> getNeighbours(ChessHex tile, int distance) {
-        return getNeighbours(tile, 0, distance);
-    }
-
-    public Set<ChessHex> getNeighbours(ChessHex tile) {
-        return getNeighbours(tile, 0, 1);
-    }
-
-    // Helper for getNeighbours
-    private void addNeibouringTiles(ChessHex tile, Set<ChessHex> ret, int length) {
-        if (length == 0) {
-            return;
-        } else {
-            for (int i = 0; i < 6; i++) {
-                ChessHex newPosTile = new ChessHex(
-                        tile.getX() + VECTORS[i][0],
-                        tile.getY() + VECTORS[i][1],
-                        tile.getZ() + VECTORS[i][2]);
-                ret.add(getTile(newPosTile));
-                addNeibouringTiles(newPosTile, ret, length - 1);
-            }
+    // EFFECTS: returns a set of tiles in all adjacent directions
+    // if tile is not in set, throws TileNotFoundException
+    public Set<ChessHex> getAdjLines(ChessHex tile) {
+        if (!map.containsKey(tile)) {
+            throw new TileNotFoundException();
         }
-    }
 
-    // Helper for getNeighbours
-    private void removeNeibouringTiles(ChessHex tile, Set<ChessHex> ret, int length) {
-        if (length == 0) {
-            return;
-        } else {
-            for (int i = 0; i < 6; i++) {
-                ChessHex newPosTile = new ChessHex(
-                        tile.getX() + VECTORS[i][0],
-                        tile.getY() + VECTORS[i][1],
-                        tile.getZ() + VECTORS[i][2]);
-                ret.remove(getTile(newPosTile));
-                removeNeibouringTiles(newPosTile, ret, length - 1);
-            }
-        }
-    }
-
-    // REQUIRES: directionVector is in VECTORS, distance > 0
-    // EFFECTS: returns a set of tiles in the given direction within a certain
-    // distance
-    public Set<ChessHex> getLine(ChessHex tile, int[] directionVector, int distance) {
         Set<ChessHex> ret = new HashSet<>();
 
-        for (int i = 1; i <= distance; i++) {
-            ret.add(getTile(new ChessHex(
-                    tile.getX() + directionVector[0] * i,
-                    tile.getY() + directionVector[1] * i,
-                    tile.getZ() + directionVector[2] * i)));
+        for (int i = 0; i < 6; i++) {
+            int j = 1;
+
+            while (true) {
+                ChessHex tileToAdd = getTile((add(tile.getCoords(), mult(VECTORS_ADJ[i], j))));
+                if (tileToAdd == null || tileToAdd.containsPiece()) {
+                    break;
+                } else {
+                    ret.add(tileToAdd);
+                    j++;
+                }
+            }
         }
 
-        ret.remove(null);
+        return ret;
+    }
+
+    // EFFECTS: returns a set of tiles in all diagonal directions
+    // if tile is not in set, throws TileNotFoundException
+    public Set<ChessHex> getDiaLines(ChessHex tile) {
+        if (!map.containsKey(tile)) {
+            throw new TileNotFoundException();
+        }
+
+        Set<ChessHex> ret = new HashSet<>();
+
+        for (int i = 0; i < 6; i++) {
+            int j = 1;
+
+            while (true) {
+                ChessHex tileToAdd = getTile((add(tile.getCoords(), mult(VECTORS_DIA[i], j))));
+                if (tileToAdd == null || tileToAdd.containsPiece()) {
+                    break;
+                } else {
+                    ret.add(tileToAdd);
+                    j++;
+                }
+            }
+        }
 
         return ret;
     }
 
     public ChessHex getTile(int x, int y, int z) {
         return map.get(new ChessHex(x, y, z));
+    }
+
+    public ChessHex getTile(int[] coords) {
+        return map.get(new ChessHex(coords[0], coords[1], coords[2]));
     }
 
     public ChessHex getTile(ChessHex tileCoords) {

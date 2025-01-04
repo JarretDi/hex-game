@@ -1,11 +1,11 @@
 package main.model.Board;
 
+import java.util.Arrays;
+
 import main.model.GamePieces.GamePiece;
 
 public class ChessHex {
-    private int x;
-    private int y;
-    private int z;
+    private int[] coords = new int[3];
 
     private ChessBoard map;
 
@@ -20,9 +20,9 @@ public class ChessHex {
         if (x + y + z != 0) {
             throw new InvalidCoordinateException();
         }
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        coords[0] = x;
+        coords[1] = y;
+        coords[2] = z;
 
         this.map = map;
         
@@ -33,16 +33,8 @@ public class ChessHex {
         this(x, y, z, null);
     }
 
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public int getZ() {
-        return z;
+    public int[] getCoords() {
+        return coords;
     }
 
     public ChessBoard getMap() {
@@ -68,18 +60,20 @@ public class ChessHex {
         this.piece = null;
     }
 
+    public Boolean containsPiece() {
+        return this.piece != null;
+    }
+
     @Override
     public String toString() {
-        return x + " " + y + " " + z + "\t| " + piece;
+        return coords[0] + " " + coords[1] + " " + coords[2] + "\t| " + piece;
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + x;
-        result = prime * result + y;
-        result = prime * result + z;
+        result = prime * result + Arrays.hashCode(coords);
         return result;
     }
 
@@ -92,11 +86,7 @@ public class ChessHex {
         if (getClass() != obj.getClass())
             return false;
         ChessHex other = (ChessHex) obj;
-        if (x != other.x)
-            return false;
-        if (y != other.y)
-            return false;
-        if (z != other.z)
+        if (!Arrays.equals(coords, other.coords))
             return false;
         return true;
     }

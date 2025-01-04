@@ -29,20 +29,20 @@ public class MapViewer extends JFrame {
 
         boardUI = new JHexPanel(new Dimension(hexagonSize, hexagonSize));
         add(boardUI, BorderLayout.CENTER);
-        drawHexesOntoBoard();
+        //drawHexesOntoBoard();
 
         pack();
         setVisible(true);
     }
 
-    private void drawHexesOntoBoard() {
-        for (ChessHex hex : chessBoard) {
-            double hexX = hex.getX();
-            double hexY = hex.getY();
-            JHexPanel newHex = new JHexPanel(new Dimension(hexagonSize, hexagonSize));
-            boardUI.add(newHex);
-            newHex.setLocation((int) (Math.sqrt(3.0) * hexX * hexagonSize + (3/2) * hexY * hexagonSize), (int) ((3/2) * hexY * hexagonSize));
-        }
-    }
+    // private void drawHexesOntoBoard() {
+    //     for (ChessHex hex : chessBoard) {
+    //         double hexX = hex.getX();
+    //         double hexY = hex.getY();
+    //         JHexPanel newHex = new JHexPanel(new Dimension(hexagonSize, hexagonSize));
+    //         boardUI.add(newHex);
+    //         newHex.setLocation((int) (Math.sqrt(3.0) * hexX * hexagonSize + (3/2) * hexY * hexagonSize), (int) ((3/2) * hexY * hexagonSize));
+    //     }
+    // }
 
 }

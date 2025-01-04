@@ -44,7 +44,7 @@ public class testGameMap {
         expected.add(new ChessHex(-1, 0, 1));
         expected.add(new ChessHex(0, -1, 1));
 
-        assertTrue(setsContainSameTilesWithSameCoords(expected, testGameMap.getNeighbours(testTile)));
+        assertTrue(setsContainSameTilesWithSameCoords(expected, testGameMap.getAdjacentTiles(testTile)));
     }
 
     @Test
@@ -56,7 +56,7 @@ public class testGameMap {
         expected.add(new ChessHex(-1, 0, 1));
         expected.add(new ChessHex(-1, -1, 2));
 
-        assertTrue(setsContainSameTilesWithSameCoords(expected, testGameMap.getNeighbours(new ChessHex(0, -1, 1))));
+        assertTrue(setsContainSameTilesWithSameCoords(expected, testGameMap.getAdjacentTiles(new ChessHex(0, -1, 1))));
     }
 
     @Test
@@ -65,50 +65,7 @@ public class testGameMap {
         expected.add(new ChessHex(0, -1, 1));
         expected.add(new ChessHex(-1, -1, 2));
 
-        assertTrue(setsContainSameTilesWithSameCoords(expected, testGameMap.getNeighbours(new ChessHex(0, -2, 2))));
-    }
-
-    @Test 
-    void testGetNeighboursDistance2(){
-        expected.add(new ChessHex(1, -2, 1));
-        expected.add(new ChessHex(0, 2, -2));
-        expected.add(new ChessHex(2, -2, 0));
-        expected.add(new ChessHex(2, -1, -1));
-        expected.add(new ChessHex(2, 0, -2));
-        expected.add(new ChessHex(1, 1, -2));
-        expected.add(new ChessHex(-1, 2, -1));
-        expected.add(new ChessHex(-2, 2, 0));
-        expected.add(new ChessHex(-2, 1, 1));
-        expected.add(new ChessHex(-2, 0, 2));
-        expected.add(new ChessHex(-1, -1, 2));
-        expected.add(new ChessHex(0, -2, 2));
-
-        assertTrue(setsContainSameTilesWithSameCoords(expected, testGameMap.getNeighbours(testTile, 1, 2)));
-    }
-
-    @Test
-    void testGetNeighboursDistance1to2() {
-        expected.add(new ChessHex(1, -1, 0));
-        expected.add(new ChessHex(1, 0, -1));
-        expected.add(new ChessHex(0, 1, -1));
-        expected.add(new ChessHex(-1, 1, 0));
-        expected.add(new ChessHex(-1, 0, 1));
-        expected.add(new ChessHex(0, -1, 1));
-
-        expected.add(new ChessHex(1, -2, 1));
-        expected.add(new ChessHex(2, -2, 0));
-        expected.add(new ChessHex(2, -1, -1));
-        expected.add(new ChessHex(2, 0, -2));
-        expected.add(new ChessHex(1, 1, -2));
-        expected.add(new ChessHex(0, 2, -2));
-        expected.add(new ChessHex(-1, 2, -1));
-        expected.add(new ChessHex(-2, 2, 0));
-        expected.add(new ChessHex(-2, 1, 1));
-        expected.add(new ChessHex(-2, 0, 2));
-        expected.add(new ChessHex(-1, -1, 2));
-        expected.add(new ChessHex(0, -2, 2));
-
-        assertTrue(setsContainSameTilesWithSameCoords(expected, testGameMap.getNeighbours(testTile, 2)));
+        assertTrue(setsContainSameTilesWithSameCoords(expected, testGameMap.getAdjacentTiles(new ChessHex(0, -2, 2))));
     }
 
     @Test
@@ -116,7 +73,7 @@ public class testGameMap {
         expected.add(new ChessHex(1,-1,0));
         expected.add(new ChessHex(2,-2,0));
 
-        assertTrue(setsContainSameTilesWithSameCoords(expected, testGameMap.getLine(testTile, ChessBoard.VECTOR_X_POS, 2)));
+        assertTrue(setsContainSameTilesWithSameCoords(expected, testGameMap.getLine(testTile, ChessBoard.VECTOR_ADJ_N, 2)));
     }
 
     @Test
@@ -127,7 +84,7 @@ public class testGameMap {
         expected.add(new ChessHex(-1,1,0));
         expected.add(new ChessHex(-1,2,-1));
 
-        assertTrue(setsContainSameTilesWithSameCoords(expected, testGameMap.getLine(newTestTile, ChessBoard.VECTOR_Z_POS, 3)));
+        assertTrue(setsContainSameTilesWithSameCoords(expected, testGameMap.getLine(newTestTile, ChessBoard.VECTOR_ADJ_SE, 3)));
     }
 
     @Test
@@ -135,7 +92,7 @@ public class testGameMap {
         expected.add(new ChessHex(-1,0,1));
         expected.add(new ChessHex(-2,0,2));
 
-        assertTrue(setsContainSameTilesWithSameCoords(expected, testGameMap.getLine(testTile, ChessBoard.VECTOR_Y_NEG, 3)));
+        assertTrue(setsContainSameTilesWithSameCoords(expected, testGameMap.getLine(testTile, ChessBoard.VECTOR_ADJ_SW, 3)));
     }
 
     Boolean setsContainSameTilesWithSameCoords(Set<ChessHex> set1, Set<ChessHex> set2) {

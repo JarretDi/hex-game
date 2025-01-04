@@ -11,6 +11,6 @@ public class King extends GamePiece {
 
     @Override
     public Set<ChessHex> getMovableHexes() {
-        return getPosition().getMap().getNeighbours(getPosition());
+        return getPosition().getMap().getAdjacentTiles(getPosition());
     }
 }

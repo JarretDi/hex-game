@@ -17,13 +17,7 @@ public class Pawn extends GamePiece {
 
     @Override
     public Set<ChessHex> getMovableHexes() {
-        Set<ChessHex> ret = new HashSet<>();
-        int[] baseDirection = getColour() ? ChessBoard.VECTOR_Z_NEG : ChessBoard.VECTOR_Z_POS;
-        if (firstMove) {
-            ret.addAll(getPosition().getMap().getLine(getPosition(), baseDirection, 2));
-        } else {
-            ret.addAll(getPosition().getMap().getLine(getPosition(), baseDirection, 1));
-        }
-        return ret;
+        // stub
+        return null;
     }
 }
