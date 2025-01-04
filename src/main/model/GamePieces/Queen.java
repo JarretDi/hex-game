@@ -15,11 +15,16 @@ public class Queen extends GamePiece {
         ChessBoard cb = ChessBoard.getInstance();
         ChessHex pos = getPosition();
 
-        Set<ChessHex> adj = cb.getAdjLines(pos);
-        Set<ChessHex> dia = cb.getDiaLines(pos);
+        Set<ChessHex> adj = cb.getAdjacentLines(pos);
+        Set<ChessHex> dia = cb.getDiagonalLines(pos);
 
         adj.addAll(dia);
 
         return adj;
+    }
+
+    @Override
+    public String getType() {
+        return "Queen";
     }
 }

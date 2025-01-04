@@ -12,7 +12,12 @@ public class Bishop extends GamePiece {
 
     @Override
     public Set<ChessHex> getMovableHexes() {
-        return ChessBoard.getInstance().getAdjLines(getPosition());
+        return ChessBoard.getInstance().getDiagonalLines(getPosition());
+    }
+
+    @Override
+    public String getType() {
+        return "Bishop";
     }
 
 }

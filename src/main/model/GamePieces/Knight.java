@@ -15,4 +15,9 @@ public class Knight extends GamePiece {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getMovableHexes'");
     }
+
+    @Override
+    public String getType() {
+        return "Knight";
+    }
 }

@@ -15,10 +15,13 @@ public abstract class GamePiece {
     public GamePiece(Boolean colour, ChessHex position) {
         this.colour = colour;
         this.position = position;
+        position.setPiece(this);
     }
 
     // Based on the game piece, returns the movable tiles
     public abstract Set<ChessHex> getMovableHexes();
+
+    public abstract String getType();
 
     public ChessHex getPosition() {
         return position;

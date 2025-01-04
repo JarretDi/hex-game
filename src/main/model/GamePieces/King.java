@@ -6,8 +6,8 @@ import main.model.Board.ChessBoard;
 import main.model.Board.ChessHex;
 
 public class King extends GamePiece {
-    public King(Boolean colour) {
-        super(colour, colour? new ChessHex(0, 0, 0) : new ChessHex(0, 0, 0));
+    public King(Boolean colour, ChessHex position) {
+        super(colour, position);
     }
 
     @Override
@@ -21,5 +21,10 @@ public class King extends GamePiece {
         adj.addAll(dia);
 
         return adj;
+    }
+
+    @Override
+    public String getType() {
+        return "King";
     }
 }

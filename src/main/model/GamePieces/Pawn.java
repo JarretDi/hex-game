@@ -20,4 +20,9 @@ public class Pawn extends GamePiece {
         // stub
         return null;
     }
+
+    @Override
+    public String getType() {
+        return "Pawn";
+    }
 }
