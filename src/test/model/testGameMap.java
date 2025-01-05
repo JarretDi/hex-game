@@ -8,10 +8,12 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import main.model.ChessGame;
 import main.model.Board.ChessBoard;
 import main.model.Board.ChessHex;
 
 public class testGameMap {
+    private ChessGame testChessGame;
     private ChessBoard testGameMap;
     private ChessHex testTile;
     private Set<ChessHex> expected;
@@ -19,7 +21,8 @@ public class testGameMap {
     @BeforeEach
     void setup() {
         testGameMap = ChessBoard.getInstance();
-        testGameMap.resetBoard();
+        testChessGame = new ChessGame();
+        testChessGame.resetBoard();
         testTile = new ChessHex(0, 0, 0);
         expected = new HashSet<>();
     }

@@ -8,20 +8,25 @@ import main.model.Board.ChessHex;
 
 public class Pawn extends GamePiece {
     private Boolean firstMove;
+    private ChessBoard cb = ChessBoard.getInstance();
+
+    private int[] forwardVector;
+    private int[] rightCapture;
+    private int[] leftCapture;
+    
 
     // Constructs an unmoved pawn at the given position with the given colour
     public Pawn(Boolean colour, ChessHex position) {
         super(colour, position);
         this.firstMove = true;
+
+        forwardVector = getColour() ? ChessBoard.VECTOR_ADJ_N : ChessBoard.VECTOR_ADJ_S;
+        rightCapture = getColour() ? ChessBoard.VECTOR_ADJ_NE : ChessBoard.VECTOR_ADJ_SE;
+        leftCapture  = getColour() ? ChessBoard.VECTOR_ADJ_NW : ChessBoard.VECTOR_ADJ_SW;
     }
 
     @Override
     public Set<ChessHex> getMovableHexes() {
-        ChessBoard cb = ChessBoard.getInstance();
-        int[] forwardVector = getColour() ? ChessBoard.VECTOR_ADJ_N : ChessBoard.VECTOR_ADJ_S;
-        int[] rightCapture = getColour() ? ChessBoard.VECTOR_ADJ_NE : ChessBoard.VECTOR_ADJ_SE;
-        int[] leftCapture  = getColour() ? ChessBoard.VECTOR_ADJ_NW : ChessBoard.VECTOR_ADJ_SW;
-
         Set<ChessHex> ret = new HashSet<>();
 
         ChessHex tileAhead = cb.getTile(ChessBoard.add(getPosition().getCoords(), forwardVector));
@@ -45,6 +50,19 @@ public class Pawn extends GamePiece {
         if (tileWest.containsEnemyPiece(this)) {
             ret.add(tileWest);
         }
+
+        return ret;
+    }
+
+    @Override
+    public Set<ChessHex> getThreatenedHexes() {
+        Set<ChessHex> ret = new HashSet<>();
+
+        ChessHex tileEast = cb.getTile(ChessBoard.add(getPosition().getCoords(), rightCapture));
+        ChessHex tileWest = cb.getTile(ChessBoard.add(getPosition().getCoords(), leftCapture));
+
+        ret.add(tileEast);
+        ret.add(tileWest);
 
         return ret;
     }

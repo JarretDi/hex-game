@@ -20,6 +20,8 @@ public class King extends GamePiece {
 
         adj.addAll(dia);
 
+        adj.removeAll(cb.getThreatenedTiles(getColour()));
+
         return adj;
     }
 

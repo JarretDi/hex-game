@@ -48,8 +48,11 @@ public class ChessHex {
         }
     }
 
-    public void removePiece() {
+    public GamePiece removePiece() {
+        GamePiece temp = this.piece;
         this.piece = null;
+        return temp;
+
     }
 
     public Boolean containsPiece() {

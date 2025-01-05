@@ -21,6 +21,10 @@ public abstract class GamePiece {
     // Based on the game piece, returns the movable tiles
     public abstract Set<ChessHex> getMovableHexes();
 
+    public Set<ChessHex> getThreatenedHexes() {
+        return getMovableHexes();
+    }
+
     public abstract String getType();
 
     public ChessHex getPosition() {

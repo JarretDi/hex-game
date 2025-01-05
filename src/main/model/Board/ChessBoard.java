@@ -6,7 +6,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import main.model.ChessGame;
 import main.model.GamePieces.Bishop;
+import main.model.GamePieces.GamePiece;
 import main.model.GamePieces.King;
 import main.model.GamePieces.Knight;
 import main.model.GamePieces.Pawn;
@@ -37,10 +39,11 @@ public class ChessBoard implements Iterable<ChessHex> {
             VECTOR_DIA_SW, VECTOR_DIA_W, VECTOR_DIA_NW
     };
 
-    private static ChessBoard chessBoard = new ChessBoard(5, 5, 5);
+    private static ChessBoard chessBoard = new ChessBoard(5, 5, 5, new ChessGame());
     private Map<ChessHex, ChessHex> map;
+    private ChessGame game;
 
-    private ChessBoard(int maxX, int maxY, int maxZ) {
+    private ChessBoard(int maxX, int maxY, int maxZ, ChessGame game) {
         map = new HashMap<>();
         for (int x = -maxX; x <= maxX; x++) {
             for (int y = -maxY; y <= maxY; y++) {
@@ -54,80 +57,12 @@ public class ChessBoard implements Iterable<ChessHex> {
                 }
             }
         }
-        resetBoard();
+        
+        this.game = game;
     }
 
     public static ChessBoard getInstance() {
         return chessBoard;
-    }
-
-    public void resetBoard() {
-        clearBoard();
-        placePawns();
-        placePieces();
-    }
-
-    private void clearBoard() {
-        for (ChessHex hex : map.keySet()) {
-            hex.removePiece();
-        }
-    }
-
-    private void placePawns() {
-        new Pawn(true, getTile(-4, -1, 5));
-        new Pawn(true, getTile(-3, -1, 4));
-        new Pawn(true, getTile(-2, -1, 3));
-        new Pawn(true, getTile(-1, -1, 2));
-        new Pawn(true, getTile(0, -1, 1));
-        new Pawn(true, getTile(1, -2, 1));
-        new Pawn(true, getTile(2, -3, 1));
-        new Pawn(true, getTile(3, -4, 1));
-        new Pawn(true, getTile(4, -5, 1));
-
-        new Pawn(false, getTile(4, 1, -5));
-        new Pawn(false, getTile(3, 1, -4));
-        new Pawn(false, getTile(2, 1, -3));
-        new Pawn(false, getTile(1, 1, -2));
-        new Pawn(false, getTile(0, 1, -1));
-        new Pawn(false, getTile(-1, 2, -1));
-        new Pawn(false, getTile(-2, 3, -1));
-        new Pawn(false, getTile(-3, 4, -1));
-        new Pawn(false, getTile(-4, 5, -1));
-    }
-
-    private void placePieces() {
-        placeWhitePieces();
-        placeBlackPieces();
-    }
-
-    private void placeWhitePieces() {
-        new Bishop(true, getTile(0, -3, 3));
-        new Bishop(true, getTile(0, -4, 4));
-        new Bishop(true, getTile(0, -5, 5));
-
-        new Knight(true, getTile(2, -5, 3));
-        new Knight(true, getTile(-2, -3, 5));
-
-        new Rook(true, getTile(3, -5, 2));
-        new Rook(true, getTile(-3, -2, 5));
-
-        new Queen(true, getTile(-1, -4, 5));
-        new King(true, getTile(1, -5, 4));
-    }
-
-    private void placeBlackPieces() {
-        new Bishop(false, getTile(0, 3, -3));
-        new Bishop(false, getTile(0, 4, -4));
-        new Bishop(false, getTile(0, 5, -5));
-
-        new Knight(false, getTile(2, 3, -5));
-        new Knight(false, getTile(-2, 5, -3));
-
-        new Rook(false, getTile(3, 2, -5));
-        new Rook(false, getTile(-3, 5, -2));
-
-        new Queen(false, getTile(-1, 5, -4));
-        new King(false, getTile(1, 4, -5));
     }
 
     public void printMap() {
@@ -273,6 +208,16 @@ public class ChessBoard implements Iterable<ChessHex> {
                 j++;
             }
         }
+    }
+
+    public Set<ChessHex> getThreatenedTiles(Boolean colour) {
+        Set<ChessHex> ret = new HashSet<>();
+
+        for (GamePiece piece : game.getEnemyPieces(!colour)) {
+            ret.addAll(piece.getThreatenedHexes());
+        }
+
+        return ret;
     }
 
     public ChessHex getTile(int x, int y, int z) {
