@@ -65,8 +65,27 @@ public class testPiece {
     }
 
     @Test
+    void testPawnDoubleMove() {
+        GamePiece testPawn = ChessBoard.getInstance().getTile(-2, -1, 3).getPiece();
+        assertEquals("Pawn", testPawn.getType());
+
+        expected.add(new ChessHex(-2, 0, 2));
+        expected.add(new ChessHex(-2, 1, 1));
+
+        assertTrue(setsContainSameTilesWithSameCoords(expected, testPawn.getMovableHexes()));
+    }
+
+    @Test
     void testKnightMove() {
-        fail();
+        GamePiece testKnight = ChessBoard.getInstance().getTile(2, -5, 3).getPiece();
+        assertEquals("Knight", testKnight.getType());
+
+        expected.add(new ChessHex(-1, -3, 4));
+        expected.add(new ChessHex(0, -2, 2));
+        expected.add(new ChessHex(3, -3, 0));
+        expected.add(new ChessHex(4, -4, 0));
+
+        assertTrue(setsContainSameTilesWithSameCoords(expected, testKnight.getMovableHexes()));
     }
 
     @Test

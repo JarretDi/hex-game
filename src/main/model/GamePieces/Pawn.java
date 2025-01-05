@@ -20,7 +20,7 @@ public class Pawn extends GamePiece {
         ChessBoard cb = ChessBoard.getInstance();
         int[] forwardVector = getColour() ? ChessBoard.VECTOR_ADJ_N : ChessBoard.VECTOR_ADJ_S;
         int[] rightCapture = getColour() ? ChessBoard.VECTOR_ADJ_NE : ChessBoard.VECTOR_ADJ_SE;
-        int[] leftCapture = getColour() ? ChessBoard.VECTOR_ADJ_NW : ChessBoard.VECTOR_ADJ_SW;
+        int[] leftCapture  = getColour() ? ChessBoard.VECTOR_ADJ_NW : ChessBoard.VECTOR_ADJ_SW;
 
         Set<ChessHex> ret = new HashSet<>();
 
