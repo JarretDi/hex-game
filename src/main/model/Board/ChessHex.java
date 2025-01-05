@@ -56,6 +56,22 @@ public class ChessHex {
         return this.piece != null;
     }
 
+    public Boolean containsAlliedPiece(GamePiece piece) {
+        if (containsPiece() && getPiece().getColour() == piece.getColour()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public Boolean containsEnemyPiece(GamePiece piece) {
+        if (containsPiece() && getPiece().getColour() != piece.getColour()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     @Override
     public String toString() {
         return coords[0] + " " + coords[1] + " " + coords[2] + "\t| " + piece;
