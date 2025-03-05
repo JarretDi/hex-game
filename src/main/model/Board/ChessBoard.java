@@ -7,13 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import main.model.ChessGame;
-import main.model.GamePieces.Bishop;
 import main.model.GamePieces.GamePiece;
-import main.model.GamePieces.King;
-import main.model.GamePieces.Knight;
-import main.model.GamePieces.Pawn;
-import main.model.GamePieces.Queen;
-import main.model.GamePieces.Rook;
 import main.modelOldRpg.map.TileNotFoundException;
 
 public class ChessBoard implements Iterable<ChessHex> {
@@ -39,11 +33,15 @@ public class ChessBoard implements Iterable<ChessHex> {
             VECTOR_DIA_SW, VECTOR_DIA_W, VECTOR_DIA_NW
     };
 
-    private static ChessBoard chessBoard = new ChessBoard(5, 5, 5, new ChessGame());
+    private static ChessBoard chessBoard = new ChessBoard(5, 5, 5);
     private Map<ChessHex, ChessHex> map;
     private ChessGame game;
 
-    private ChessBoard(int maxX, int maxY, int maxZ, ChessGame game) {
+    public ChessGame getGame() {
+        return game;
+    }
+
+    private ChessBoard(int maxX, int maxY, int maxZ) {
         map = new HashMap<>();
         for (int x = -maxX; x <= maxX; x++) {
             for (int y = -maxY; y <= maxY; y++) {
@@ -58,7 +56,7 @@ public class ChessBoard implements Iterable<ChessHex> {
             }
         }
         
-        this.game = game;
+        this.game = new ChessGame();
     }
 
     public static ChessBoard getInstance() {
@@ -73,7 +71,7 @@ public class ChessBoard implements Iterable<ChessHex> {
 
     // REQUIRES: v1, v2 have same size
     // EFFECTS: returns a vector consisted of the two added element-wise
-    public static int[] add(int[] v1, int[] v2) {
+    public static int[] addV(int[] v1, int[] v2) {
         int[] v3 = new int[v1.length];
 
         for (int i = 0; i < v1.length; i++) {
@@ -84,7 +82,7 @@ public class ChessBoard implements Iterable<ChessHex> {
     }
 
     // EFFECTS: returns a vector consisted of a vector multiplied by a scalar
-    public static int[] mult(int[] v, int scalar) {
+    public static int[] multV(int[] v, int scalar) {
         int[] v2 = new int[v.length];
 
         for (int i = 0; i < v.length; i++) {
@@ -106,7 +104,7 @@ public class ChessBoard implements Iterable<ChessHex> {
         Set<ChessHex> ret = new HashSet<>();
 
         for (int i = 0; i < 6; i++) {
-            ChessHex tileToAdd = getTile(add(tile.getCoords(), VECTORS_ADJ[i]));
+            ChessHex tileToAdd = getTile(addV(tile.getCoords(), VECTORS_ADJ[i]));
             if (tileToAdd == null || tileToAdd.containsAlliedPiece(tile.getPiece())) {
                 continue;
             } else {
@@ -129,7 +127,7 @@ public class ChessBoard implements Iterable<ChessHex> {
         Set<ChessHex> ret = new HashSet<>();
 
         for (int i = 0; i < 6; i++) {
-            ChessHex tileToAdd = getTile(add(tile.getCoords(), VECTORS_DIA[i]));
+            ChessHex tileToAdd = getTile(addV(tile.getCoords(), VECTORS_DIA[i]));
             if (tileToAdd == null || tileToAdd.containsAlliedPiece(tile.getPiece())) {
                 continue;
             } else {
@@ -158,11 +156,16 @@ public class ChessBoard implements Iterable<ChessHex> {
         return ret;
     }
 
+    // REQUIRES: 0 <= i <= 6
+    // EFFECTS: returns a line in the direction of the given number of direction vector i
+    //          if the next tile being added is an allied piece, stop
+    //          if the next tile is an enemy piece, add that hex and then stop
+    //          else continue adding tiles along that line
     private void getAdjacentLine(ChessHex tile, Set<ChessHex> ret, int i) {
         int j = 1;
 
         while (true) {
-            ChessHex tileToAdd = getTile((add(tile.getCoords(), mult(VECTORS_ADJ[i], j))));
+            ChessHex tileToAdd = getTile((addV(tile.getCoords(), multV(VECTORS_ADJ[i], j))));
             if (tileToAdd == null || tileToAdd.containsAlliedPiece(tile.getPiece())) {
                 break;
             } else if (tileToAdd.containsEnemyPiece(tile.getPiece())) {
@@ -197,7 +200,7 @@ public class ChessBoard implements Iterable<ChessHex> {
         int j = 1;
 
         while (true) {
-            ChessHex tileToAdd = getTile((add(tile.getCoords(), mult(VECTORS_DIA[i], j))));
+            ChessHex tileToAdd = getTile((addV(tile.getCoords(), multV(VECTORS_DIA[i], j))));
             if (tileToAdd == null || tileToAdd.containsAlliedPiece(tile.getPiece())) {
                 break;
             } else if (tileToAdd.containsEnemyPiece(tile.getPiece())) {

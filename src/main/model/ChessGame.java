@@ -1,6 +1,8 @@
 package main.model;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import main.model.Board.ChessBoard;
@@ -12,14 +14,23 @@ import main.model.GamePieces.*;
  * managing pieces, updating the board states, etc.
  */
 public class ChessGame {
-    ChessBoard cb = ChessBoard.getInstance();
+    private ChessBoard cb;
 
     private Set<GamePiece> whitePieces;
     private Set<GamePiece> blackPieces;
 
+    private List<GamePiece> capturedPieces;
+
     public ChessGame() {
+        setBoard();
         whitePieces = new HashSet<>();
         blackPieces = new HashSet<>();
+
+        capturedPieces = new ArrayList<>();
+    }
+
+    public void setBoard() {
+        cb = ChessBoard.getInstance();
     }
 
     public void resetBoard() {
@@ -103,7 +114,9 @@ public class ChessGame {
         }
 
         if (position.containsEnemyPiece(piece)) {
-            getEnemyPieces(piece).remove(position.removePiece());
+            GamePiece enemyPiece = position.removePiece();
+            getEnemyPieces(piece).remove(enemyPiece);
+            capturedPieces.add(enemyPiece);
         }
 
         piece.setPosition(position);
@@ -115,6 +128,10 @@ public class ChessGame {
 
     public Set<GamePiece> getBlackPieces() {
         return blackPieces;
+    }
+
+    public List<GamePiece> getCapturedPieces() {
+        return capturedPieces;
     }
 
     public Set<GamePiece> getEnemyPieces(GamePiece piece) {
