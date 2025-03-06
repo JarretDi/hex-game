@@ -22,10 +22,11 @@ public class testPiece {
 
     @BeforeEach
     void setup() {
-        
         testTile = new ChessHex(0, -2, 2);
         whiteKing = new King(true, new ChessHex(0, 0, 0));
         expected = new HashSet<>();
+        ChessBoard.getInstance().getGame().setBoard();
+        ChessBoard.getInstance().getGame().resetBoard();
     }
 
     @Test

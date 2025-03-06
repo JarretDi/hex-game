@@ -10,7 +10,6 @@ public class MapViewer extends JFrame {
     private static final int WIDTH = 1366;
     private static final int HEIGHT = 768;
     private static final String STATUS_OK = "System OK";
-    private static final int hexagonSize = 100;
 
     private JLabel statusLabel;
     private JPanel boardUI;

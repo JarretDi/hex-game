@@ -1,5 +1,6 @@
 package main.model.GamePieces;
 
+import java.awt.Image;
 import java.util.Set;
 
 import main.model.Board.ChessBoard;
@@ -11,6 +12,7 @@ public abstract class GamePiece {
 
     private ChessHex position;
     private Boolean colour;
+    protected Image image;
 
     public GamePiece(Boolean colour, ChessHex position) {
         this.colour = colour;
@@ -26,6 +28,10 @@ public abstract class GamePiece {
     }
 
     public abstract String getType();
+
+    public Image getImage() {
+        return image;
+    }
 
     public ChessHex getPosition() {
         return position;

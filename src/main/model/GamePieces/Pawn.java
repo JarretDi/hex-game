@@ -1,7 +1,10 @@
 package main.model.GamePieces;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.imageio.ImageIO;
 
 import main.model.Board.ChessBoard;
 import main.model.Board.ChessHex;
@@ -23,6 +26,16 @@ public class Pawn extends GamePiece {
         forwardVector = getColour() ? ChessBoard.VECTOR_ADJ_N : ChessBoard.VECTOR_ADJ_S;
         rightCapture = getColour() ? ChessBoard.VECTOR_ADJ_NE : ChessBoard.VECTOR_ADJ_SE;
         leftCapture  = getColour() ? ChessBoard.VECTOR_ADJ_NW : ChessBoard.VECTOR_ADJ_SW;
+
+        try {
+            if (getColour() == GamePiece.WHITE) {
+                image = ImageIO.read(new File("./src/data/pieces/white-pawn.png"));
+            } else {
+                image = ImageIO.read(new File("./src/data/pieces/black-pawn.png"));
+            }
+        } catch (Exception e) {
+            // Really should not have got here
+        }
     }
 
     @Override
