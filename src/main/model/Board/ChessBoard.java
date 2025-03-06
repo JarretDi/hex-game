@@ -46,6 +46,13 @@ public class ChessBoard implements Iterable<ChessHex> {
         return game;
     }
 
+    // NECESSARY TO BE CALLED AFTER CHESSBOARD HAS FINISHED CONSTRUCTING
+    public void startGame() {
+        game.setBoard();
+        game.resetBoard();
+        colourBoard();
+    }
+
     private ChessBoard(int maxX, int maxY, int maxZ) {
         map = new HashMap<>();
         for (int x = -maxX; x <= maxX; x++) {
@@ -218,7 +225,7 @@ public class ChessBoard implements Iterable<ChessHex> {
         }
     }
 
-    public void colourBoard() {
+    private void colourBoard() {
         ChessHex start1 = getTile(0, 0, 0);
         ChessHex start2 = getTile(0, 1, -1);
         ChessHex start3 = getTile(1, 0, -1);

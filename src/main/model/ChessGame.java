@@ -22,7 +22,6 @@ public class ChessGame {
     private List<GamePiece> capturedPieces;
 
     public ChessGame() {
-        setBoard();
         whitePieces = new HashSet<>();
         blackPieces = new HashSet<>();
 
