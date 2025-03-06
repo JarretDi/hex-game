@@ -33,5 +33,4 @@ public class MapViewer extends JFrame {
         pack();
         setVisible(true);
     }
-
 }

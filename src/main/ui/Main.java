@@ -10,6 +10,7 @@ public class Main {
         game.setBoard();
         game.resetBoard();
         gameMap.printMap();
+        gameMap.colourBoard();
         new MapViewer(gameMap);
     }
 }

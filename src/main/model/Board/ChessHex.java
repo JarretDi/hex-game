@@ -1,13 +1,14 @@
 package main.model.Board;
 
+import java.awt.Color;
 import java.util.Arrays;
 
 import main.model.GamePieces.GamePiece;
 
 public class ChessHex {
     private int[] coords = new int[3];
-
     private GamePiece piece;
+    private Color colour;
 
     // EFFECTS: construct a hexagonal tile with given x, y, z coordinates
     // Throws an invalid coordinate exception if given coordinates does not satisfy
@@ -73,6 +74,15 @@ public class ChessHex {
         } else {
             return false;
         }
+    }
+
+    
+    public Color getColour() {
+        return colour;
+    }
+
+    public void setColour(Color colour) {
+        this.colour = colour;
     }
 
     @Override

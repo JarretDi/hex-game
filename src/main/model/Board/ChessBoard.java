@@ -1,5 +1,6 @@
 package main.model.Board;
 
+import java.awt.Color;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -32,6 +33,10 @@ public class ChessBoard implements Iterable<ChessHex> {
             VECTOR_DIA_NE, VECTOR_DIA_E, VECTOR_DIA_SE,
             VECTOR_DIA_SW, VECTOR_DIA_W, VECTOR_DIA_NW
     };
+
+    public static final Color COLOUR1 = Color.decode("#F4A460");
+    public static final Color COLOUR2 = Color.decode("#CD853F");
+    public static final Color COLOUR3 = Color.decode("#FFDAB9");
 
     private static ChessBoard chessBoard = new ChessBoard(5, 5, 5);
     private Map<ChessHex, ChessHex> map;
@@ -211,6 +216,39 @@ public class ChessBoard implements Iterable<ChessHex> {
                 j++;
             }
         }
+    }
+
+    public void colourBoard() {
+        ChessHex start1 = getTile(0, 0, 0);
+        ChessHex start2 = getTile(0, 1, -1);
+        ChessHex start3 = getTile(1, 0, -1);
+
+        Set<ChessHex> colour1 = colourBoard(start1, new HashSet<>());
+        Set<ChessHex> colour2 = colourBoard(start2, new HashSet<>());
+        Set<ChessHex> colour3 = colourBoard(start3, new HashSet<>());
+
+        for (ChessHex hex : colour1) {
+            hex.setColour(COLOUR2);
+        }
+        for (ChessHex hex : colour2) {
+            hex.setColour(COLOUR1);
+        }
+        for (ChessHex hex : colour3) {
+            hex.setColour(COLOUR3);
+        }
+    }
+
+    private Set<ChessHex> colourBoard(ChessHex current, Set<ChessHex> visited) {
+        if (current == null) return null;
+        if (!visited.contains(current)) {
+            visited.add(current);
+    
+            for (int i = 0; i < 6; i++) {
+                ChessHex h = getTile(addV(current.getCoords(), VECTORS_DIA[i]));
+                colourBoard(h, visited);
+            }
+        }
+        return visited;
     }
 
     public Set<ChessHex> getThreatenedTiles(Boolean colour) {

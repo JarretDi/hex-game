@@ -13,3 +13,7 @@ Functionality is mostly done to move pieces, currently drawing the chess board a
 ## Dependencies
 
 Uses JUnit5 and Java Swing
+
+## Asset/Image credits:
+
+Background: <a href="http://www.freepik.com">Designed by ilonitta / Freepik</a>
