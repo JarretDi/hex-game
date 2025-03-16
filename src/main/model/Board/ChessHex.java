@@ -87,7 +87,7 @@ public class ChessHex {
 
     @Override
     public String toString() {
-        return coords[0] + " " + coords[1] + " " + coords[2] + "\t| " + piece;
+        return coords[0] + " " + coords[1] + " " + coords[2] + "\t| " + ((piece != null) ? (piece.getColour()? "White " : "Black ") + piece.getType() : "");
     }
 
     @Override

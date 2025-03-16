@@ -1,10 +1,7 @@
 package main.ui;
 
-import java.awt.Color;
 import java.awt.Point;
 import java.awt.Polygon;
-
-import main.model.Board.ChessHex;
 
 // Class representing a hexagon with a radius, center and polygon
 // Adapted from 

@@ -16,16 +16,17 @@ import main.model.GamePieces.*;
 public class ChessGame {
     private ChessBoard cb;
 
-    private Set<GamePiece> whitePieces;
-    private Set<GamePiece> blackPieces;
+    private GamePiece selectedPiece;
+    private boolean turn;
+
+    private Set<GamePiece> pieces;
 
     private List<GamePiece> capturedPieces;
 
     public ChessGame() {
-        whitePieces = new HashSet<>();
-        blackPieces = new HashSet<>();
-
+        pieces = new HashSet<>();
         capturedPieces = new ArrayList<>();
+        turn = GamePiece.WHITE;
     }
 
     public void setBoard() {
@@ -45,70 +46,64 @@ public class ChessGame {
     }
 
     private void placePawns() {
-        whitePieces.add(new Pawn(true, cb.getTile(-4, -1, 5)));
-        whitePieces.add(new Pawn(true, cb.getTile(-3, -1, 4)));
-        whitePieces.add(new Pawn(true, cb.getTile(-2, -1, 3)));
-        whitePieces.add(new Pawn(true, cb.getTile(-1, -1, 2)));
-        whitePieces.add(new Pawn(true, cb.getTile(0, -1, 1)));
-        whitePieces.add(new Pawn(true, cb.getTile(1, -2, 1)));
-        whitePieces.add(new Pawn(true, cb.getTile(2, -3, 1)));
-        whitePieces.add(new Pawn(true, cb.getTile(3, -4, 1)));
-        whitePieces.add(new Pawn(true, cb.getTile(4, -5, 1)));
+        pieces.add(new Pawn(GamePiece.WHITE, cb.getTile(-4, -1, 5)));
+        pieces.add(new Pawn(GamePiece.WHITE, cb.getTile(-3, -1, 4)));
+        pieces.add(new Pawn(GamePiece.WHITE, cb.getTile(-2, -1, 3)));
+        pieces.add(new Pawn(GamePiece.WHITE, cb.getTile(-1, -1, 2)));
+        pieces.add(new Pawn(GamePiece.WHITE, cb.getTile(0, -1, 1)));
+        pieces.add(new Pawn(GamePiece.WHITE, cb.getTile(1, -2, 1)));
+        pieces.add(new Pawn(GamePiece.WHITE, cb.getTile(2, -3, 1)));
+        pieces.add(new Pawn(GamePiece.WHITE, cb.getTile(3, -4, 1)));
+        pieces.add(new Pawn(GamePiece.WHITE, cb.getTile(4, -5, 1)));
 
-        blackPieces.add(new Pawn(false, cb.getTile(4, 1, -5)));
-        blackPieces.add(new Pawn(false, cb.getTile(3, 1, -4)));
-        blackPieces.add(new Pawn(false, cb.getTile(2, 1, -3)));
-        blackPieces.add(new Pawn(false, cb.getTile(1, 1, -2)));
-        blackPieces.add(new Pawn(false, cb.getTile(0, 1, -1)));
-        blackPieces.add(new Pawn(false, cb.getTile(-1, 2, -1)));
-        blackPieces.add(new Pawn(false, cb.getTile(-2, 3, -1)));
-        blackPieces.add(new Pawn(false, cb.getTile(-3, 4, -1)));
-        blackPieces.add(new Pawn(false, cb.getTile(-4, 5, -1)));
+        pieces.add(new Pawn(GamePiece.BLACK, cb.getTile(4, 1, -5)));
+        pieces.add(new Pawn(GamePiece.BLACK, cb.getTile(3, 1, -4)));
+        pieces.add(new Pawn(GamePiece.BLACK, cb.getTile(2, 1, -3)));
+        pieces.add(new Pawn(GamePiece.BLACK, cb.getTile(1, 1, -2)));
+        pieces.add(new Pawn(GamePiece.BLACK, cb.getTile(0, 1, -1)));
+        pieces.add(new Pawn(GamePiece.BLACK, cb.getTile(-1, 2, -1)));
+        pieces.add(new Pawn(GamePiece.BLACK, cb.getTile(-2, 3, -1)));
+        pieces.add(new Pawn(GamePiece.BLACK, cb.getTile(-3, 4, -1)));
+        pieces.add(new Pawn(GamePiece.BLACK, cb.getTile(-4, 5, -1)));
     }
 
     private void placePieces() {
-        placeWhitePieces();
-        placeBlackPieces();
-    }
+        pieces.add(new Bishop(GamePiece.WHITE, cb.getTile(0, -3, 3)));
+        pieces.add(new Bishop(GamePiece.WHITE, cb.getTile(0, -4, 4)));
+        pieces.add(new Bishop(GamePiece.WHITE, cb.getTile(0, -5, 5)));
 
-    private void placeWhitePieces() {
-        whitePieces.add(new Bishop(true, cb.getTile(0, -3, 3)));
-        whitePieces.add(new Bishop(true, cb.getTile(0, -4, 4)));
-        whitePieces.add(new Bishop(true, cb.getTile(0, -5, 5)));
+        pieces.add(new Knight(GamePiece.WHITE, cb.getTile(2, -5, 3)));
+        pieces.add(new Knight(GamePiece.WHITE, cb.getTile(-2, -3, 5)));
 
-        whitePieces.add(new Knight(true, cb.getTile(2, -5, 3)));
-        whitePieces.add(new Knight(true, cb.getTile(-2, -3, 5)));
+        pieces.add(new Rook(GamePiece.WHITE, cb.getTile(3, -5, 2)));
+        pieces.add(new Rook(GamePiece.WHITE, cb.getTile(-3, -2, 5)));
 
-        whitePieces.add(new Rook(true, cb.getTile(3, -5, 2)));
-        whitePieces.add(new Rook(true, cb.getTile(-3, -2, 5)));
+        pieces.add(new Queen(GamePiece.WHITE, cb.getTile(-1, -4, 5)));
+        pieces.add(new King(GamePiece.WHITE, cb.getTile(1, -5, 4)));
 
-        whitePieces.add(new Queen(true, cb.getTile(-1, -4, 5)));
-        whitePieces.add(new King(true, cb.getTile(1, -5, 4)));
-    }
+        pieces.add(new Bishop(GamePiece.BLACK, cb.getTile(0, 3, -3)));
+        pieces.add(new Bishop(GamePiece.BLACK, cb.getTile(0, 4, -4)));
+        pieces.add(new Bishop(GamePiece.BLACK, cb.getTile(0, 5, -5)));
 
-    private void placeBlackPieces() {
-        blackPieces.add(new Bishop(false, cb.getTile(0, 3, -3)));
-        blackPieces.add(new Bishop(false, cb.getTile(0, 4, -4)));
-        blackPieces.add(new Bishop(false, cb.getTile(0, 5, -5)));
+        pieces.add(new Knight(GamePiece.BLACK, cb.getTile(2, 3, -5)));
+        pieces.add(new Knight(GamePiece.BLACK, cb.getTile(-2, 5, -3)));
 
-        blackPieces.add(new Knight(false, cb.getTile(2, 3, -5)));
-        blackPieces.add(new Knight(false, cb.getTile(-2, 5, -3)));
+        pieces.add(new Rook(GamePiece.BLACK, cb.getTile(3, 2, -5)));
+        pieces.add(new Rook(GamePiece.BLACK, cb.getTile(-3, 5, -2)));
 
-        blackPieces.add(new Rook(false, cb.getTile(3, 2, -5)));
-        blackPieces.add(new Rook(false, cb.getTile(-3, 5, -2)));
-
-        blackPieces.add(new Queen(false, cb.getTile(-1, 5, -4)));
-        blackPieces.add(new King(false, cb.getTile(1, 4, -5)));
+        pieces.add(new Queen(GamePiece.BLACK, cb.getTile(-1, 5, -4)));
+        pieces.add(new King(GamePiece.BLACK, cb.getTile(1, 4, -5)));
     }
 
     // MODIFIES: ChessBoard
     // EFFECTS: moves a given piece to a specified hex
-    // if postion.containsEnemyPiece(this) captures it, removing it from blackPieces
-    // if the given position is not in piece.getMovableHexes() throws InvalidMoveException
+    // if postion.containsEnemyPiece(this) captures it, removing it from pieces
+    // if the given position is not in piece.getMovableHexes() or it isn't that players turn
+    // throws InvalidMoveException
     public void move(GamePiece piece, ChessHex position) throws InvalidMoveException {
         position = cb.getTile(position);
 
-        if (!piece.getMovableHexes().contains(position)) {
+        if (!piece.getMovableHexes().contains(position) || turn != piece.getColour()) {
             throw new InvalidMoveException();
         }
 
@@ -119,14 +114,44 @@ public class ChessGame {
         }
 
         piece.setPosition(position);
+        selectedPiece = null;
+        turn = !turn;
+    }
+
+    public void notify(ChessHex hex) {
+        if (hex == null) {
+            selectedPiece = null;
+        } else if (selectedPiece == null && hex.containsPiece()) {
+            selectedPiece = hex.getPiece();
+        } else if (hex.containsPiece() && selectedPiece == hex.getPiece()) {
+            selectedPiece = null;
+        } if (selectedPiece != null && selectedPiece.getMovableHexes().contains(hex)) {
+            try {
+                move(selectedPiece, hex);
+            } catch (InvalidMoveException e) {
+                System.out.println("Invalid move");
+            }
+        } 
     }
 
     public Set<GamePiece> getWhitePieces() {
-        return whitePieces;
+        Set<GamePiece> ret = new HashSet<>();
+        for (GamePiece p : pieces) {
+            if (p.getColour()) {
+                ret.add(p);
+            }
+        }
+        return ret;
     }
 
     public Set<GamePiece> getBlackPieces() {
-        return blackPieces;
+        Set<GamePiece> ret = new HashSet<>();
+        for (GamePiece p : pieces) {
+            if (!p.getColour()) {
+                ret.add(p);
+            }
+        }
+        return ret;
     }
 
     public List<GamePiece> getCapturedPieces() {
@@ -138,6 +163,6 @@ public class ChessGame {
     }
 
     public Set<GamePiece> getEnemyPieces(Boolean colour) {
-        return colour ? getBlackPieces() : getWhitePieces();
+        return colour ?  getBlackPieces() : getWhitePieces();
     }
 }

@@ -49,7 +49,7 @@ public class Pawn extends GamePiece {
 
         if (firstMove) {
             ChessHex tile2Ahead = cb.getTile(ChessBoard.addV(tileAhead.getCoords(), forwardVector));
-            if (!tile2Ahead.containsPiece()) {
+            if (tile2Ahead != null && !tile2Ahead.containsPiece()) {
                 ret.add(tile2Ahead);
             }
         }

@@ -29,6 +29,8 @@ public class MapViewer extends JFrame {
         boardUI = new BoardPanel();
         add(boardUI, BorderLayout.CENTER);
 
+        setPreferredSize(new Dimension(WIDTH, HEIGHT));
+
         pack();
         setVisible(true);
     }
