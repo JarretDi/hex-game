@@ -5,17 +5,17 @@
 
 ## Current Progress
 
-- **Game Logic**: Mostly finished, pieces capture and move how one would expect, though more testing is needed
+- **Game Logic**: Mostly finished, finilizing win conditions and game restarting
 - **Board Rendering**: The hexagonal game board has been successfully drawn and colored, providing a clear and visually appealing layout.
-- **Piece Rendering**: Work is ongoing to render chess pieces on the board. This feature is the next major milestone in the project, ensuring that players can interact with the pieces as they would in a regular chess game.
+- **Piece Rendering**: Pieces are rendered, and move as one would expect. Future changes involve highlighting possible moves for a piece, highlighting the piece itself when it is selected, and animations for movement rather than teleportation
 
 
 ## Features
 
 - Hexagonal grid-based chessboard
-- Pieces to be rendered on the hexagonal grid with smooth movement
-- Basic game rules and mechanics, with more to come
-- Future support for multiple game variants
+- Pieces with movement, albeit not too smooth yet
+- Basic game rules and mechanics
+- Glinski's board and piece movement
 
 ## Planned Features (Future Releases)
 
