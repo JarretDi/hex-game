@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 import main.model.Board.ChessBoard;
 import main.model.Board.ChessHex;
 import main.model.GamePieces.GamePiece;
+import main.model.GamePieces.King;
 
 public class BoardPanel extends JPanel implements MouseListener {
     private Image backgroundImage;
@@ -66,6 +67,10 @@ public class BoardPanel extends JPanel implements MouseListener {
 
         GamePiece piece = h.getPiece();
         if (piece != null) {
+            if (piece.getType() == "King" && ((King) piece).isInCheck()) {
+                g.setColor(Color.red);
+                g.fillOval(x1 - pieceSize / 2, y1 - pieceSize / 2, pieceSize, pieceSize);
+            }
             Image pieceImage = piece.getImage().getScaledInstance(pieceSize, pieceSize, Image.SCALE_SMOOTH);
             g.drawImage(pieceImage, x1 - pieceSize / 2, y1 - pieceSize / 2, this);
         }

@@ -1,5 +1,6 @@
 package main.model.GamePieces;
 
+import java.awt.Image;
 import java.io.File;
 import java.util.Set;
 
@@ -24,11 +25,11 @@ public class King extends GamePiece {
 
     @Override
     public Set<ChessHex> getMovableHexes() {
-        Set <ChessHex> threatendHexs = getThreatenedHexes();
+        Set<ChessHex> threatendHexes = getThreatenedHexes();
 
-        threatendHexs.removeAll(ChessBoard.getInstance().getThreatenedTiles(!getColour()));
+        threatendHexes.removeAll(ChessBoard.getInstance().getThreatenedTiles(!getColour()));
 
-        return threatendHexs;
+        return threatendHexes;
     }
 
     @Override
@@ -44,8 +45,17 @@ public class King extends GamePiece {
         return adj;
     }
 
+    public Boolean isInCheck() {
+        return ChessBoard.getInstance().getThreatenedTiles(!getColour()).contains(getPosition());
+    }
+
     @Override
     public String getType() {
         return "King";
+    }
+
+    @Override
+    public Image getImage() {
+        return isInCheck() ? image : image;
     }
 }

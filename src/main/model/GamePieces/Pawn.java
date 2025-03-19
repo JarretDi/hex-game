@@ -10,7 +10,6 @@ import main.model.Board.ChessBoard;
 import main.model.Board.ChessHex;
 
 public class Pawn extends GamePiece {
-    private Boolean firstMove;
     private ChessBoard cb = ChessBoard.getInstance();
 
     private int[] forwardVector;
@@ -21,7 +20,6 @@ public class Pawn extends GamePiece {
     // Constructs an unmoved pawn at the given position with the given colour
     public Pawn(Boolean colour, ChessHex position) {
         super(colour, position);
-        this.firstMove = true;
 
         forwardVector = getColour() ? ChessBoard.VECTOR_ADJ_N : ChessBoard.VECTOR_ADJ_S;
         rightCapture = getColour() ? ChessBoard.VECTOR_ADJ_NE : ChessBoard.VECTOR_ADJ_SE;
@@ -47,9 +45,9 @@ public class Pawn extends GamePiece {
             ret.add(tileAhead);
         }
 
-        if (firstMove) {
+        if (!hasMoved()) {
             ChessHex tile2Ahead = cb.getTile(ChessBoard.addV(tileAhead.getCoords(), forwardVector));
-            if (tile2Ahead != null && !tile2Ahead.containsPiece()) {
+            if (!tileAhead.containsPiece() && tile2Ahead != null && !tile2Ahead.containsPiece()) {
                 ret.add(tile2Ahead);
             }
         }
@@ -83,9 +81,5 @@ public class Pawn extends GamePiece {
     @Override
     public String getType() {
         return "Pawn";
-    }
-
-    public void move() {
-        this.firstMove = false;
     }
 }

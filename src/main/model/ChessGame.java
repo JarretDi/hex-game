@@ -13,7 +13,7 @@ import main.model.GamePieces.*;
  * Represents a class handling the operations of a chess game, including
  * managing pieces, updating the board states, etc.
  */
-public class ChessGame {
+public class ChessGame extends Observable {
     private ChessBoard cb;
 
     private GamePiece selectedPiece;
@@ -37,8 +37,9 @@ public class ChessGame {
         clearBoard();
         placePawns();
         placePieces();
+        addObservers();
     }
-
+    
     private void clearBoard() {
         for (ChessHex hex : cb) {
             hex.removePiece();
@@ -95,6 +96,16 @@ public class ChessGame {
         pieces.add(new King(GamePiece.BLACK, cb.getTile(1, 4, -5)));
     }
 
+    private void addObservers() {
+        observers.clear();
+        for (GamePiece piece : pieces) {
+            observers.add(piece);
+        }
+        for (ChessHex hex : ChessBoard.getInstance().getMap()) {
+            observers.add(hex);
+        }
+    }
+
     // MODIFIES: ChessBoard
     // EFFECTS: moves a given piece to a specified hex
     // if postion.containsEnemyPiece(this) captures it, removing it from pieces
@@ -109,29 +120,44 @@ public class ChessGame {
 
         if (position.containsEnemyPiece(piece)) {
             GamePiece enemyPiece = position.removePiece();
-            getEnemyPieces(piece).remove(enemyPiece);
+            pieces.remove(enemyPiece);
             capturedPieces.add(enemyPiece);
         }
 
         piece.setPosition(position);
-        selectedPiece = null;
+        piece.move();
+        selectPiece(null);
         turn = !turn;
+
+        resolveCheck();
     }
 
+    private void resolveCheck() {
+        
+    }
+        
     public void notify(ChessHex hex) {
-        if (hex == null) {
-            selectedPiece = null;
-        } else if (selectedPiece == null && hex.containsPiece()) {
-            selectedPiece = hex.getPiece();
-        } else if (hex.containsPiece() && selectedPiece == hex.getPiece()) {
-            selectedPiece = null;
-        } if (selectedPiece != null && selectedPiece.getMovableHexes().contains(hex)) {
+        if (hex == null || hex.containsPiece() && selectedPiece == hex.getPiece()) {
+            selectPiece(null);
+        } else if (hex.containsPiece() && (selectedPiece == null  || hex.getPiece().getColour() == turn)) {
+            selectPiece(hex.getPiece());
+        } else if (selectedPiece != null && selectedPiece.getMovableHexes().contains(hex)) {
             try {
                 move(selectedPiece, hex);
             } catch (InvalidMoveException e) {
                 System.out.println("Invalid move");
             }
         } 
+    }
+
+    public void selectPiece(GamePiece piece) {
+        if (piece == null) {
+            selectedPiece = null;
+            notifyObservers(null, "All unselected");
+        }
+
+        selectedPiece = piece;
+        notifyObservers(piece, "Piece selected");
     }
 
     public Set<GamePiece> getWhitePieces() {

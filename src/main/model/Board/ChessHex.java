@@ -3,12 +3,15 @@ package main.model.Board;
 import java.awt.Color;
 import java.util.Arrays;
 
+import main.model.Observer;
 import main.model.GamePieces.GamePiece;
 
-public class ChessHex {
+public class ChessHex implements Observer {
     private int[] coords = new int[3];
     private GamePiece piece;
     private Color colour;
+
+    private Boolean isHighlighted;
 
     // EFFECTS: construct a hexagonal tile with given x, y, z coordinates
     // Throws an invalid coordinate exception if given coordinates does not satisfy
@@ -24,6 +27,7 @@ public class ChessHex {
         coords[2] = z;
         
         this.piece = null;
+        this.isHighlighted = false;
     }
 
     public ChessHex(int x, int y, int z) throws InvalidCoordinateException {
@@ -61,24 +65,16 @@ public class ChessHex {
     }
 
     public Boolean containsAlliedPiece(GamePiece piece) {
-        if (containsPiece() && getPiece().getColour() == piece.getColour()) {
-            return true;
-        } else {
-            return false;
-        }
+        return (containsPiece() && getPiece().getColour() == piece.getColour());
     }
 
     public Boolean containsEnemyPiece(GamePiece piece) {
-        if (containsPiece() && getPiece().getColour() != piece.getColour()) {
-            return true;
-        } else {
-            return false;
-        }
+        return (containsPiece() && getPiece().getColour() != piece.getColour());
     }
 
     
     public Color getColour() {
-        return colour;
+        return isHighlighted ? colour.brighter() : colour;
     }
 
     public void setColour(Color colour) {
@@ -111,6 +107,20 @@ public class ChessHex {
             return false;
         return true;
     }
+
+    @Override
+    public void update(Object obj, String msg) {
+        if (msg.equals("All unselected") || obj == null) {
+            this.isHighlighted = false;
+        } else if (msg == "Piece selected") {
+            if (((GamePiece)obj).getMovableHexes().contains(this)) {
+                this.isHighlighted = true;
+            } else {
+                this.isHighlighted = false;
+            }
+        }
+    }
+
 
     /*
      * |1 0 0| |\sqrt3/2 1/2 0|

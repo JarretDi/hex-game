@@ -32,3 +32,4 @@
 ## Attributions
 - Background: <a href="http://www.freepik.com">Designed by ilonitta / Freepik</a>
 - Chess Pieces from https://greenchess.net/info.php?item=downloads under CC BY-SA 3.0
+- Piece Sounds from https://www.freesoundstock.com/products/chess-sound-effects?utm_source=youtube&utm_medium=product_shelf

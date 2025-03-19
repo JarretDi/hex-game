@@ -46,6 +46,10 @@ public class ChessBoard implements Iterable<ChessHex> {
         return game;
     }
 
+    public Set<ChessHex> getMap() {
+        return map.keySet();
+    }
+
     // NECESSARY TO BE CALLED AFTER CHESSBOARD HAS FINISHED CONSTRUCTING
     public void startGame() {
         game.setBoard();
