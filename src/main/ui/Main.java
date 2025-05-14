@@ -7,9 +7,7 @@ import main.model.Board.ChessHex;
 
 public class Main {
     public static void main(String[] args) {
-        ChessBoard gameMap = ChessBoard.getInstance();
-        ChessGame game = gameMap.getGame();
-        gameMap.startGame();
+        ChessBoard gameMap = new ChessBoard(5, 5, 5);
         gameMap.printMap();
         new MapViewer(gameMap);
     }

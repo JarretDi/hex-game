@@ -24,7 +24,7 @@ public class Queen extends GamePiece {
 
     @Override
     public Set<ChessHex> getMovableHexes() {
-        ChessBoard cb = ChessBoard.getInstance();
+        ChessBoard cb = getBoard();
         ChessHex pos = getPosition();
 
         Set<ChessHex> adj = cb.getAdjacentLines(pos);
@@ -37,6 +37,6 @@ public class Queen extends GamePiece {
 
     @Override
     public String getType() {
-        return "Queen";
+        return "Q";
     }
 }

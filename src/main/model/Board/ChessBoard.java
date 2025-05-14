@@ -38,7 +38,6 @@ public class ChessBoard implements Iterable<ChessHex> {
     public static final Color COLOUR2 = Color.decode("#CD853F");
     public static final Color COLOUR3 = Color.decode("#FFDAB9");
 
-    private static ChessBoard chessBoard = new ChessBoard(5, 5, 5);
     private Map<ChessHex, ChessHex> map;
     private ChessGame game;
 
@@ -50,14 +49,7 @@ public class ChessBoard implements Iterable<ChessHex> {
         return map.keySet();
     }
 
-    // NECESSARY TO BE CALLED AFTER CHESSBOARD HAS FINISHED CONSTRUCTING
-    public void startGame() {
-        game.setBoard();
-        game.resetBoard();
-        colourBoard();
-    }
-
-    private ChessBoard(int maxX, int maxY, int maxZ) {
+    public ChessBoard(int maxX, int maxY, int maxZ) {
         map = new HashMap<>();
         for (int x = -maxX; x <= maxX; x++) {
             for (int y = -maxY; y <= maxY; y++) {
@@ -72,11 +64,8 @@ public class ChessBoard implements Iterable<ChessHex> {
             }
         }
         
-        this.game = new ChessGame();
-    }
-
-    public static ChessBoard getInstance() {
-        return chessBoard;
+        this.game = new ChessGame(this);
+        colourBoard();
     }
 
     public void printMap() {
@@ -264,7 +253,6 @@ public class ChessBoard implements Iterable<ChessHex> {
 
     public Set<ChessHex> getThreatenedTiles(Boolean colour) {
         Set<ChessHex> ret = new HashSet<>();
-
         for (GamePiece piece : game.getEnemyPieces(!colour)) {
             ret.addAll(piece.getThreatenedHexes());
         }

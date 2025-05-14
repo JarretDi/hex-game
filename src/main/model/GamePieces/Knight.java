@@ -39,7 +39,7 @@ public class Knight extends GamePiece {
 
     @Override
     public Set<ChessHex> getMovableHexes() {
-        ChessBoard cb = ChessBoard.getInstance();
+        ChessBoard cb = getBoard();
 
         Set<ChessHex> ret = new HashSet<>();
 
@@ -55,6 +55,6 @@ public class Knight extends GamePiece {
 
     @Override
     public String getType() {
-        return "Knight";
+        return "N";
     }
 }

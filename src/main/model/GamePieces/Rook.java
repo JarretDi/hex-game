@@ -24,11 +24,11 @@ public class Rook extends GamePiece {
 
     @Override
     public Set<ChessHex> getMovableHexes() {
-        return ChessBoard.getInstance().getAdjacentLines(getPosition());
+        return getBoard().getAdjacentLines(getPosition());
     }
 
     @Override
     public String getType() {
-        return "Rook";
+        return "R";
     }
 }

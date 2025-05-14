@@ -20,11 +20,12 @@ import main.model.GamePieces.GamePiece;
 import main.model.GamePieces.King;
 
 public class BoardPanel extends JPanel implements MouseListener {
+    private ChessBoard cb;
     private Image backgroundImage;
     private final int hexRadius = 42;
     private final int pieceSize = (int) (hexRadius * Math.sqrt(2));
 
-    public BoardPanel() {
+    public BoardPanel(ChessBoard cb) {
         super();
         try {
             backgroundImage = ImageIO.read(new File("./src/data/157.jpg"));
@@ -36,13 +37,14 @@ public class BoardPanel extends JPanel implements MouseListener {
             e.printStackTrace();
         }
         addMouseListener(this);
+        this.cb = cb;
     }
 
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.drawImage(backgroundImage, 0, 0, this);
-        for (ChessHex hex : ChessBoard.getInstance()) {
+        for (ChessHex hex : cb) {
             drawHexagon(hex, g);
         }
     }
@@ -67,7 +69,7 @@ public class BoardPanel extends JPanel implements MouseListener {
 
         GamePiece piece = h.getPiece();
         if (piece != null) {
-            if (piece.getType() == "King" && ((King) piece).isInCheck()) {
+            if (piece.getType() == "K" && ((King) piece).isInCheck()) {
                 g.setColor(Color.red);
                 g.fillOval(x1 - pieceSize / 2, y1 - pieceSize / 2, pieceSize, pieceSize);
             }
@@ -89,8 +91,8 @@ public class BoardPanel extends JPanel implements MouseListener {
         double x1 = ((2.0 / 3.0) * -x) / hexRadius;
         double y1 = (-1.0 / 3.0 * -x + Math.sqrt(3) / 3.0 * -y) / hexRadius;
 
-        ChessHex hex = ChessBoard.getInstance().getTile(cubeRound(x1, y1));
-        ChessBoard.getInstance().getGame().notify(hex);
+        ChessHex hex = cb.getTile(cubeRound(x1, y1));
+        cb.getGame().notify(hex);
         repaint();
         revalidate();
     }

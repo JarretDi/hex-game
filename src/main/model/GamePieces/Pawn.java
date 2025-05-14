@@ -10,7 +10,7 @@ import main.model.Board.ChessBoard;
 import main.model.Board.ChessHex;
 
 public class Pawn extends GamePiece {
-    private ChessBoard cb = ChessBoard.getInstance();
+    private ChessBoard cb = getBoard();
 
     private int[] forwardVector;
     private int[] rightCapture;
@@ -80,6 +80,6 @@ public class Pawn extends GamePiece {
 
     @Override
     public String getType() {
-        return "Pawn";
+        return "p";
     }
 }

@@ -15,6 +15,7 @@ import main.model.GamePieces.King;
 import main.model.GamePieces.Pawn;
 
 public class testPiece {
+    ChessBoard cb;
     GamePiece whiteKing;
     ChessHex testTile;
 
@@ -22,10 +23,10 @@ public class testPiece {
 
     @BeforeEach
     void setup() {
+        cb = new ChessBoard(5, 5, 5);
         testTile = new ChessHex(0, -2, 2);
         whiteKing = new King(true, new ChessHex(0, 0, 0));
         expected = new HashSet<>();
-        ChessBoard.getInstance().startGame();
     }
 
     @Test
@@ -56,8 +57,8 @@ public class testPiece {
 
     @Test
     void testPawnMove() {
-        GamePiece testPawn = ChessBoard.getInstance().getTile(0, -1, 1).getPiece();
-        assertEquals("Pawn", testPawn.getType());
+        GamePiece testPawn = cb.getTile(0, -1, 1).getPiece();
+        assertEquals("p", testPawn.getType());
 
         expected.add(new ChessHex(0, 0, 0));
 
@@ -66,8 +67,8 @@ public class testPiece {
 
     @Test
     void testPawnDoubleMove() {
-        GamePiece testPawn = ChessBoard.getInstance().getTile(-2, -1, 3).getPiece();
-        assertEquals("Pawn", testPawn.getType());
+        GamePiece testPawn = cb.getTile(-2, -1, 3).getPiece();
+        assertEquals("p", testPawn.getType());
 
         expected.add(new ChessHex(-2, 0, 2));
         expected.add(new ChessHex(-2, 1, 1));
@@ -77,8 +78,8 @@ public class testPiece {
 
     @Test
     void testKnightMove() {
-        GamePiece testKnight = ChessBoard.getInstance().getTile(2, -5, 3).getPiece();
-        assertEquals("Knight", testKnight.getType());
+        GamePiece testKnight = cb.getTile(2, -5, 3).getPiece();
+        assertEquals("N", testKnight.getType());
 
         expected.add(new ChessHex(-1, -3, 4));
         expected.add(new ChessHex(0, -2, 2));
@@ -90,8 +91,8 @@ public class testPiece {
 
     @Test
     void testBishopMove() {
-        GamePiece testBishop = ChessBoard.getInstance().getTile(0, -4, 4).getPiece();
-        assertEquals("Bishop", testBishop.getType());
+        GamePiece testBishop = cb.getTile(0, -4, 4).getPiece();
+        assertEquals("B", testBishop.getType());
 
         expected.add(new ChessHex(-1, -2, 3));
         expected.add(new ChessHex(-2, 0, 2));
@@ -108,8 +109,8 @@ public class testPiece {
 
     @Test
     void testRookMove() {
-        GamePiece testRook = ChessBoard.getInstance().getTile(-3, -2, 5).getPiece();
-        assertEquals("Rook", testRook.getType());
+        GamePiece testRook = cb.getTile(-3, -2, 5).getPiece();
+        assertEquals("R", testRook.getType());
 
         expected.add(new ChessHex(-2, -2, 4));
         expected.add(new ChessHex(-1, -2, 3));
@@ -120,8 +121,8 @@ public class testPiece {
 
     @Test
     void testQueenMove() {
-        GamePiece testQueen = ChessBoard.getInstance().getTile(-1, -4, 5).getPiece();
-        assertEquals("Queen", testQueen.getType());
+        GamePiece testQueen = cb.getTile(-1, -4, 5).getPiece();
+        assertEquals("Q", testQueen.getType());
 
         expected.add(new ChessHex(-1, -3, 4));
         expected.add(new ChessHex(-1, -2, 3));
@@ -136,8 +137,8 @@ public class testPiece {
 
     @Test
     void testKingMove() {
-        GamePiece testKing = ChessBoard.getInstance().getTile(1, -5, 4).getPiece();
-        assertEquals("King", testKing.getType());
+        GamePiece testKing = cb.getTile(1, -5, 4).getPiece();
+        assertEquals("K", testKing.getType());
 
         expected.add(new ChessHex(1, -4, 3));
         expected.add(new ChessHex(2, -4, 2));

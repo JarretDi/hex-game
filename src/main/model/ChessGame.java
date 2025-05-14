@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import main.model.Board.ChessBoard;
 import main.model.Board.ChessHex;
 import main.model.GamePieces.*;
+import main.model.Logger.BoardEvent;
+import main.model.Logger.BoardLogger;
 
 /*
  * Represents a class handling the operations of a chess game, including
@@ -23,17 +26,11 @@ public class ChessGame extends Observable {
 
     private List<GamePiece> capturedPieces;
 
-    public ChessGame() {
+    public ChessGame(ChessBoard board) {
         pieces = new HashSet<>();
         capturedPieces = new ArrayList<>();
         turn = GamePiece.WHITE;
-    }
-
-    public void setBoard() {
-        cb = ChessBoard.getInstance();
-    }
-
-    public void resetBoard() {
+        cb = board;
         clearBoard();
         placePawns();
         placePieces();
@@ -101,7 +98,7 @@ public class ChessGame extends Observable {
         for (GamePiece piece : pieces) {
             observers.add(piece);
         }
-        for (ChessHex hex : ChessBoard.getInstance().getMap()) {
+        for (ChessHex hex : cb.getMap()) {
             observers.add(hex);
         }
     }
@@ -111,25 +108,46 @@ public class ChessGame extends Observable {
     // if postion.containsEnemyPiece(this) captures it, removing it from pieces
     // if the given position is not in piece.getMovableHexes() or it isn't that players turn
     // throws InvalidMoveException
-    public void move(GamePiece piece, ChessHex position) throws InvalidMoveException {
-        position = cb.getTile(position);
+    public void move(GamePiece piece, ChessHex newPosition) throws InvalidMoveException {
+        ChessHex originalPosition = piece.getPosition();
+        newPosition = cb.getTile(newPosition);
+        Boolean isCapture = false;
+        Boolean isCheck = false;
 
-        if (!piece.getMovableHexes().contains(position) || turn != piece.getColour()) {
+        if (!validMove(piece, newPosition)) {
             throw new InvalidMoveException();
         }
 
-        if (position.containsEnemyPiece(piece)) {
-            GamePiece enemyPiece = position.removePiece();
+        if (newPosition.containsEnemyPiece(piece)) {
+            GamePiece enemyPiece = newPosition.removePiece();
             pieces.remove(enemyPiece);
             capturedPieces.add(enemyPiece);
+            isCapture = true;
         }
 
-        piece.setPosition(position);
+        piece.setPosition(newPosition);
         piece.move();
         selectPiece(null);
+
+        if (getKing(!turn).isInCheck()) {
+            isCheck = true;
+        }
+
         turn = !turn;
 
+        BoardLogger.getInstance().addEvent(new BoardEvent(piece, originalPosition, newPosition, isCapture, isCheck));
+
         resolveCheck();
+    }
+
+    private boolean validMove(GamePiece piece, ChessHex position) {
+        if (turn != piece.getColour()) {
+            return false;
+        }
+        if (!piece.getMovableHexes().contains(position)) {
+            return false;
+        }
+        return true;
     }
 
     private void resolveCheck() {
@@ -190,5 +208,14 @@ public class ChessGame extends Observable {
 
     public Set<GamePiece> getEnemyPieces(Boolean colour) {
         return colour ?  getBlackPieces() : getWhitePieces();
+    }
+
+    public King getKing(Boolean colour) {
+        for (GamePiece piece : pieces) {
+            if (piece.getType() == "K" && piece.getColour() == colour) {
+                return (King) piece;
+            }
+        }
+        return null;
     }
 }

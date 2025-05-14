@@ -35,6 +35,10 @@ public abstract class GamePiece implements Observer {
 
     public abstract String getType();
 
+    public ChessBoard getBoard() {
+        return position.getBoard();
+    }
+
     public Image getImage() {
         return image;
     }

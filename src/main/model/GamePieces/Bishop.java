@@ -24,11 +24,11 @@ public class Bishop extends GamePiece {
 
     @Override
     public Set<ChessHex> getMovableHexes() {
-        return ChessBoard.getInstance().getDiagonalLines(getPosition());
+        return getBoard().getDiagonalLines(getPosition());
     }
 
     @Override
     public String getType() {
-        return "Bishop";
+        return "B";
     }
 }

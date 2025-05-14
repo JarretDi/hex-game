@@ -8,6 +8,7 @@ import main.model.GamePieces.GamePiece;
 
 public class ChessHex implements Observer {
     private int[] coords = new int[3];
+    private ChessBoard chessBoard;
     private GamePiece piece;
     private Color colour;
 
@@ -26,6 +27,7 @@ public class ChessHex implements Observer {
         coords[1] = y;
         coords[2] = z;
         
+        this.chessBoard = map;
         this.piece = null;
         this.isHighlighted = false;
     }
@@ -72,6 +74,9 @@ public class ChessHex implements Observer {
         return (containsPiece() && getPiece().getColour() != piece.getColour());
     }
 
+    public ChessBoard getBoard() {
+        return chessBoard;
+    }
     
     public Color getColour() {
         return isHighlighted ? colour.brighter() : colour;
@@ -83,7 +88,7 @@ public class ChessHex implements Observer {
 
     @Override
     public String toString() {
-        return coords[0] + " " + coords[1] + " " + coords[2] + "\t| " + ((piece != null) ? (piece.getColour()? "White " : "Black ") + piece.getType() : "");
+        return "(" + coords[0] + " " + coords[1] + " " + coords[2] + ")";
     }
 
     @Override

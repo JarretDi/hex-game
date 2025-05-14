@@ -20,9 +20,8 @@ public class testGameMap {
 
     @BeforeEach
     void setup() {
-        testGameMap = ChessBoard.getInstance();
-        testChessGame = new ChessGame();
-        testChessGame.resetBoard();
+        testGameMap = new ChessBoard(5, 5, 5);
+        testChessGame = testGameMap.getGame();
         testTile = new ChessHex(0, 0, 0);
         expected = new HashSet<>();
     }

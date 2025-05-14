@@ -27,14 +27,14 @@ public class King extends GamePiece {
     public Set<ChessHex> getMovableHexes() {
         Set<ChessHex> threatendHexes = getThreatenedHexes();
 
-        threatendHexes.removeAll(ChessBoard.getInstance().getThreatenedTiles(!getColour()));
+        threatendHexes.removeAll(getBoard().getThreatenedTiles(!getColour()));
 
         return threatendHexes;
     }
 
     @Override
     public Set<ChessHex> getThreatenedHexes() {
-        ChessBoard cb = ChessBoard.getInstance();
+        ChessBoard cb = getBoard();
         ChessHex pos = getPosition();
 
         Set<ChessHex> adj = cb.getAdjacentTiles(pos);
@@ -46,12 +46,12 @@ public class King extends GamePiece {
     }
 
     public Boolean isInCheck() {
-        return ChessBoard.getInstance().getThreatenedTiles(!getColour()).contains(getPosition());
+        return getBoard().getThreatenedTiles(!getColour()).contains(getPosition());
     }
 
     @Override
     public String getType() {
-        return "King";
+        return "K";
     }
 
     @Override
