@@ -26,16 +26,27 @@ public class ChessGame extends Observable {
 
     private List<GamePiece> capturedPieces;
 
-    public ChessGame(ChessBoard board) {
+    public ChessGame(ChessBoard board, Boolean shouldReset) {
         pieces = new HashSet<>();
         capturedPieces = new ArrayList<>();
         turn = GamePiece.WHITE;
         cb = board;
-        clearBoard();
-        placePawns();
-        placePieces();
+
+        if (shouldReset) {
+            clearBoard();
+            placePawns();
+            placePieces();
+        } else {
+            for (ChessHex hex : cb) {
+                if (hex.containsPiece()) {
+                    pieces.add(hex.getPiece());
+                }
+            }
+        }
         addObservers();
     }
+
+
     
     private void clearBoard() {
         for (ChessHex hex : cb) {
@@ -117,6 +128,8 @@ public class ChessGame extends Observable {
         if (!validMove(piece, newPosition)) {
             throw new InvalidMoveException();
         }
+
+        BoardLogger.getInstance().logBoard(cb);
 
         if (newPosition.containsEnemyPiece(piece)) {
             GamePiece enemyPiece = newPosition.removePiece();

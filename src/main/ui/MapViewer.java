@@ -16,7 +16,7 @@ public class MapViewer extends JFrame implements WindowListener {
     private static final String STATUS_OK = "System OK";
 
     private JLabel statusLabel;
-    private JPanel boardUI;
+    private BoardPanel boardUI;
 
     private ChessBoard chessBoard;
 
@@ -33,6 +33,7 @@ public class MapViewer extends JFrame implements WindowListener {
         boardUI = new BoardPanel(cb);
         add(boardUI, BorderLayout.CENTER);
         addWindowListener(this);
+        boardUI.setFocusable(true);
 
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
 
@@ -67,7 +68,7 @@ public class MapViewer extends JFrame implements WindowListener {
 
     @Override
     public void windowActivated(WindowEvent e) {
-        
+
     }
 
     @Override

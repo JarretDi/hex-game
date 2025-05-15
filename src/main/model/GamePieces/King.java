@@ -23,6 +23,11 @@ public class King extends GamePiece {
         }
     }
 
+    public King(King other, ChessHex position) {
+        super(other, position);
+        image = other.image;
+    }
+
     @Override
     public Set<ChessHex> getMovableHexes() {
         Set<ChessHex> threatendHexes = getThreatenedHexes();

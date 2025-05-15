@@ -6,6 +6,8 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
@@ -18,8 +20,9 @@ import main.model.Board.ChessBoard;
 import main.model.Board.ChessHex;
 import main.model.GamePieces.GamePiece;
 import main.model.GamePieces.King;
+import main.model.Logger.BoardLogger;
 
-public class BoardPanel extends JPanel implements MouseListener {
+public class BoardPanel extends JPanel implements MouseListener, KeyListener {
     private ChessBoard cb;
     private Image backgroundImage;
     private final int hexRadius = 42;
@@ -37,6 +40,7 @@ public class BoardPanel extends JPanel implements MouseListener {
             e.printStackTrace();
         }
         addMouseListener(this);
+        addKeyListener(this);
         this.cb = cb;
     }
 
@@ -142,5 +146,36 @@ public class BoardPanel extends JPanel implements MouseListener {
     @Override
     public void mouseExited(MouseEvent e) {
         // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+        
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+        int keyCode = e.getKeyCode();
+        switch(keyCode) { 
+            case KeyEvent.VK_UP:
+                // handle up 
+                break;
+            case KeyEvent.VK_DOWN:
+                // handle down 
+                break;
+            case KeyEvent.VK_LEFT:
+                // handle left
+                this.cb = new ChessBoard(BoardLogger.getInstance().getPrevBoard());
+                repaint();
+                revalidate();
+            case KeyEvent.VK_RIGHT :
+                // handle right
+                break;
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+
     }
 }

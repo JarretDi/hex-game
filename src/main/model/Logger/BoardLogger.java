@@ -2,12 +2,14 @@ package main.model.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import main.model.Board.ChessBoard;
+import main.model.Board.ChessHex;
 
 public class BoardLogger {
     private static BoardLogger logger = new BoardLogger();
-    private List<ChessBoard> history;
+    private List<Map<ChessHex, ChessHex>> history;
     private List<BoardEvent> events;
 
     private BoardLogger() {
@@ -19,7 +21,7 @@ public class BoardLogger {
         return logger;
     }
 
-    public ChessBoard getPrevBoard() {
+    public Map<ChessHex, ChessHex> getPrevBoard() {
         return history.getLast();
     }
 
@@ -33,6 +35,10 @@ public class BoardLogger {
             System.out.println(count + ". " + event.getMsg());
             count++;
         }
+    }
+
+    public void logBoard(ChessBoard cb) {
+        history.add(cb.duplicateBoard());
     }
 
     public void addEvent(BoardEvent event) {

@@ -9,6 +9,7 @@ import java.util.Set;
 
 import main.model.ChessGame;
 import main.model.GamePieces.GamePiece;
+import main.model.GamePieces.PieceFactory;
 import main.modelOldRpg.map.TileNotFoundException;
 
 public class ChessBoard implements Iterable<ChessHex> {
@@ -64,37 +65,39 @@ public class ChessBoard implements Iterable<ChessHex> {
             }
         }
         
-        this.game = new ChessGame(this);
+        this.game = new ChessGame(this, true);
         colourBoard();
+    }
+
+    // Construct a chess board already given a map
+    public ChessBoard(Map<ChessHex, ChessHex> map) {
+        this.map = map;
+        for (ChessHex hex : map.keySet()) {
+            hex.setBoard(this);
+        }
+        this.game = new ChessGame(this, false);
+        colourBoard();
+    }
+
+    public Map<ChessHex, ChessHex> duplicateBoard() {
+        Map<ChessHex, ChessHex> ret = new HashMap<>();
+
+        for (ChessHex hex : map.keySet()) {
+            ChessHex newHex = new ChessHex(hex);
+            if (hex.containsPiece()) {
+                GamePiece oldPiece = hex.getPiece();
+                newHex.setPiece(PieceFactory.makePiece(oldPiece, newHex));
+            }
+            ret.put(newHex, newHex);
+        }
+
+        return ret;
     }
 
     public void printMap() {
         for (ChessHex t : map.keySet()) {
             System.out.println(t);
         }
-    }
-
-    // REQUIRES: v1, v2 have same size
-    // EFFECTS: returns a vector consisted of the two added element-wise
-    public static int[] addV(int[] v1, int[] v2) {
-        int[] v3 = new int[v1.length];
-
-        for (int i = 0; i < v1.length; i++) {
-            v3[i] = v1[i] + v2[i];
-        }
-
-        return v3;
-    }
-
-    // EFFECTS: returns a vector consisted of a vector multiplied by a scalar
-    public static int[] multV(int[] v, int scalar) {
-        int[] v2 = new int[v.length];
-
-        for (int i = 0; i < v.length; i++) {
-            v2[i] = v[i] * scalar;
-        }
-
-        return v2;
     }
 
     // EFFECTS: returns the set of empty tiles that are adjacent to a given tile
@@ -270,6 +273,29 @@ public class ChessBoard implements Iterable<ChessHex> {
 
     public ChessHex getTile(ChessHex tileCoords) {
         return map.get(tileCoords);
+    }
+
+    // REQUIRES: v1, v2 have same size
+    // EFFECTS: returns a vector consisted of the two added element-wise
+    public static int[] addV(int[] v1, int[] v2) {
+        int[] v3 = new int[v1.length];
+
+        for (int i = 0; i < v1.length; i++) {
+            v3[i] = v1[i] + v2[i];
+        }
+
+        return v3;
+    }
+
+    // EFFECTS: returns a vector consisted of a vector multiplied by a scalar
+    public static int[] multV(int[] v, int scalar) {
+        int[] v2 = new int[v.length];
+
+        for (int i = 0; i < v.length; i++) {
+            v2[i] = v[i] * scalar;
+        }
+
+        return v2;
     }
 
     @Override

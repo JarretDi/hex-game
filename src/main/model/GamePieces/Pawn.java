@@ -10,8 +10,6 @@ import main.model.Board.ChessBoard;
 import main.model.Board.ChessHex;
 
 public class Pawn extends GamePiece {
-    private ChessBoard cb = getBoard();
-
     private int[] forwardVector;
     private int[] rightCapture;
     private int[] leftCapture;
@@ -36,28 +34,38 @@ public class Pawn extends GamePiece {
         }
     }
 
+    public Pawn(Pawn other, ChessHex position) {
+        super(other, position);
+
+        forwardVector = other.forwardVector;
+        rightCapture = other.rightCapture;
+        leftCapture = other.leftCapture;
+
+        image = other.image;
+    }
+
     @Override
     public Set<ChessHex> getMovableHexes() {
         Set<ChessHex> ret = new HashSet<>();
 
-        ChessHex tileAhead = cb.getTile(ChessBoard.addV(getPosition().getCoords(), forwardVector));
+        ChessHex tileAhead = getPosition().getBoard().getTile(ChessBoard.addV(getPosition().getCoords(), forwardVector));
         if (!tileAhead.containsPiece()) {
             ret.add(tileAhead);
         }
 
         if (!hasMoved()) {
-            ChessHex tile2Ahead = cb.getTile(ChessBoard.addV(tileAhead.getCoords(), forwardVector));
+            ChessHex tile2Ahead = getPosition().getBoard().getTile(ChessBoard.addV(tileAhead.getCoords(), forwardVector));
             if (!tileAhead.containsPiece() && tile2Ahead != null && !tile2Ahead.containsPiece()) {
                 ret.add(tile2Ahead);
             }
         }
 
-        ChessHex tileEast = cb.getTile(ChessBoard.addV(getPosition().getCoords(), rightCapture));
+        ChessHex tileEast = getPosition().getBoard().getTile(ChessBoard.addV(getPosition().getCoords(), rightCapture));
         if (tileEast.containsEnemyPiece(this)) {
             ret.add(tileEast);
         }
 
-        ChessHex tileWest = cb.getTile(ChessBoard.addV(getPosition().getCoords(), leftCapture));
+        ChessHex tileWest = getPosition().getBoard().getTile(ChessBoard.addV(getPosition().getCoords(), leftCapture));
         if (tileWest.containsEnemyPiece(this)) {
             ret.add(tileWest);
         }
@@ -69,8 +77,8 @@ public class Pawn extends GamePiece {
     public Set<ChessHex> getThreatenedHexes() {
         Set<ChessHex> ret = new HashSet<>();
 
-        ChessHex tileEast = cb.getTile(ChessBoard.addV(getPosition().getCoords(), rightCapture));
-        ChessHex tileWest = cb.getTile(ChessBoard.addV(getPosition().getCoords(), leftCapture));
+        ChessHex tileEast = getPosition().getBoard().getTile(ChessBoard.addV(getPosition().getCoords(), rightCapture));
+        ChessHex tileWest = getPosition().getBoard().getTile(ChessBoard.addV(getPosition().getCoords(), leftCapture));
 
         ret.add(tileEast);
         ret.add(tileWest);

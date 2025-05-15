@@ -22,6 +22,11 @@ public class Queen extends GamePiece {
         }
     }
 
+    public Queen(Queen other, ChessHex position) {
+        super(other, position);
+        image = other.image;
+    }
+
     @Override
     public Set<ChessHex> getMovableHexes() {
         ChessBoard cb = getBoard();

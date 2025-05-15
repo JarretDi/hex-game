@@ -26,6 +26,13 @@ public abstract class GamePiece implements Observer {
         position.setPiece(this);
     }
 
+    public GamePiece(GamePiece other, ChessHex position) {
+        this.hasMoved = other.hasMoved;
+        this.colour = other.colour;
+        this.position = position;
+        this.isSelected = false;
+    }
+
     // Based on the game piece, returns the movable tiles
     public abstract Set<ChessHex> getMovableHexes();
 

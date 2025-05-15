@@ -22,6 +22,11 @@ public class Bishop extends GamePiece {
         }
     }
 
+    public Bishop(Bishop other, ChessHex position) {
+        super(other, position);
+        image = other.image;
+    }
+
     @Override
     public Set<ChessHex> getMovableHexes() {
         return getBoard().getDiagonalLines(getPosition());

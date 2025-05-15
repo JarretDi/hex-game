@@ -5,6 +5,7 @@ import java.util.Arrays;
 
 import main.model.Observer;
 import main.model.GamePieces.GamePiece;
+import main.model.GamePieces.Pawn;
 
 public class ChessHex implements Observer {
     private int[] coords = new int[3];
@@ -28,6 +29,18 @@ public class ChessHex implements Observer {
         coords[2] = z;
         
         this.chessBoard = map;
+        this.piece = null;
+        this.isHighlighted = false;
+    }
+
+    // Copy Constructor for ChessHex
+    // sets map for null
+    public ChessHex(ChessHex other) {
+        this.coords[0] = other.coords[0];
+        this.coords[1] = other.coords[1];
+        this.coords[2] = other.coords[2];
+
+        this.chessBoard = null;
         this.piece = null;
         this.isHighlighted = false;
     }
@@ -76,6 +89,10 @@ public class ChessHex implements Observer {
 
     public ChessBoard getBoard() {
         return chessBoard;
+    }
+
+    public void setBoard(ChessBoard cb) {
+        this.chessBoard = cb;
     }
     
     public Color getColour() {
