@@ -1,17 +1,21 @@
 package main.model.Board;
 
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import main.model.ChessGame;
 import main.model.GamePieces.GamePiece;
+import main.model.GamePieces.King;
 import main.model.GamePieces.PieceFactory;
+import main.model.Logger.BoardLogger;
 import main.modelOldRpg.map.TileNotFoundException;
 
+// Represents the minimum amount of information needed to reconstruct a Chessboard
 public class ChessBoard implements Iterable<ChessHex> {
     public static final int[] VECTOR_ADJ_N = { 0, 1, -1 };
     public static final int[] VECTOR_ADJ_NE = { 1, 0, -1 };
@@ -40,15 +44,11 @@ public class ChessBoard implements Iterable<ChessHex> {
     public static final Color COLOUR3 = Color.decode("#FFDAB9");
 
     private Map<ChessHex, ChessHex> map;
-    private ChessGame game;
 
-    public ChessGame getGame() {
-        return game;
-    }
-
-    public Set<ChessHex> getMap() {
-        return map.keySet();
-    }
+    private Set<GamePiece> pieces;
+    private List<GamePiece> capturedPieces;
+    private boolean turn;
+    private int turnCount;
 
     public ChessBoard(int maxX, int maxY, int maxZ) {
         map = new HashMap<>();
@@ -64,22 +64,37 @@ public class ChessBoard implements Iterable<ChessHex> {
                 }
             }
         }
+
+        pieces = new HashSet<>();
+        capturedPieces = new ArrayList<>();
+        turn = GamePiece.WHITE;
+        turnCount = 1;
         
-        this.game = new ChessGame(this, true);
         colourBoard();
     }
 
-    // Construct a chess board already given a map
-    public ChessBoard(Map<ChessHex, ChessHex> map) {
-        this.map = map;
+    // Copy constructor for a chess board
+    public ChessBoard(ChessBoard other) {
+        this.map = other.duplicateBoard();
+        pieces = new HashSet<>();
+        capturedPieces = new ArrayList<>();
+        turn = other.getTurn();
+        turnCount = other.turnCount;
+
         for (ChessHex hex : map.keySet()) {
             hex.setBoard(this);
+            if (hex.containsPiece()) {
+                pieces.add(hex.getPiece());
+            }
         }
-        this.game = new ChessGame(this, false);
+        for (GamePiece gp : other.getCapturedPieces()) {
+            capturedPieces.add(PieceFactory.makePiece(gp, null));
+        }
         colourBoard();
     }
 
-    public Map<ChessHex, ChessHex> duplicateBoard() {
+    // Helper for copy constructor
+    private Map<ChessHex, ChessHex> duplicateBoard() {
         Map<ChessHex, ChessHex> ret = new HashMap<>();
 
         for (ChessHex hex : map.keySet()) {
@@ -94,10 +109,120 @@ public class ChessBoard implements Iterable<ChessHex> {
         return ret;
     }
 
+    public Set<ChessHex> getMap() {
+        return map.keySet();
+    }
+
     public void printMap() {
         for (ChessHex t : map.keySet()) {
             System.out.println(t);
         }
+    }
+
+    private void colourBoard() {
+        ChessHex start1 = getTile(0, 0, 0);
+        ChessHex start2 = getTile(0, 1, -1);
+        ChessHex start3 = getTile(1, 0, -1);
+
+        Set<ChessHex> colour1 = colourBoard(start1, new HashSet<>());
+        Set<ChessHex> colour2 = colourBoard(start2, new HashSet<>());
+        Set<ChessHex> colour3 = colourBoard(start3, new HashSet<>());
+
+        for (ChessHex hex : colour1) {
+            hex.setColour(COLOUR2);
+        }
+        for (ChessHex hex : colour2) {
+            hex.setColour(COLOUR1);
+        }
+        for (ChessHex hex : colour3) {
+            hex.setColour(COLOUR3);
+        }
+    }
+
+    private Set<ChessHex> colourBoard(ChessHex current, Set<ChessHex> visited) {
+        if (current == null) return null;
+        if (!visited.contains(current)) {
+            visited.add(current);
+    
+            for (int i = 0; i < 6; i++) {
+                ChessHex h = getTile(addV(current.getCoords(), VECTORS_DIA[i]));
+                colourBoard(h, visited);
+            }
+        }
+        return visited;
+    }
+
+    public ChessHex getTile(int x, int y, int z) {
+        return map.get(new ChessHex(x, y, z));
+    }
+
+    public ChessHex getTile(int[] coords) {
+        return map.get(new ChessHex(coords[0], coords[1], coords[2]));
+    }
+
+    public ChessHex getTile(ChessHex tileCoords) {
+        return map.get(tileCoords);
+    }
+
+    public boolean getTurn() {
+        return turn;
+    }
+
+    // Swaps whose turn and returns the value of the new turn
+    // increments turn counter by one
+    public boolean swapTurn() {
+        turn = !turn;
+        turnCount++;
+        return turn;
+    }
+
+    public int getTurnCount() {
+        return turnCount;
+    }
+
+    public Set<GamePiece> getPieces() {
+        return pieces;
+    }
+
+    public Set<GamePiece> getWhitePieces() {
+        Set<GamePiece> ret = new HashSet<>();
+        for (GamePiece p : pieces) {
+            if (p.getColour()) {
+                ret.add(p);
+            }
+        }
+        return ret;
+    }
+
+    public Set<GamePiece> getBlackPieces() {
+        Set<GamePiece> ret = new HashSet<>();
+        for (GamePiece p : pieces) {
+            if (!p.getColour()) {
+                ret.add(p);
+            }
+        }
+        return ret;
+    }
+
+    public List<GamePiece> getCapturedPieces() {
+        return capturedPieces;
+    }
+
+    public Set<GamePiece> getEnemyPieces(GamePiece piece) {
+        return piece.getColour() ? getBlackPieces() : getWhitePieces();
+    }
+
+    public Set<GamePiece> getEnemyPieces(boolean colour) {
+        return colour ?  getBlackPieces() : getWhitePieces();
+    }
+
+    public King getKing(boolean colour) {
+        for (GamePiece piece : pieces) {
+            if (piece.getType() == "K" && piece.getColour() == colour) {
+                return (King) piece;
+            }
+        }
+        return null;
     }
 
     // EFFECTS: returns the set of empty tiles that are adjacent to a given tile
@@ -220,59 +345,14 @@ public class ChessBoard implements Iterable<ChessHex> {
             }
         }
     }
-
-    private void colourBoard() {
-        ChessHex start1 = getTile(0, 0, 0);
-        ChessHex start2 = getTile(0, 1, -1);
-        ChessHex start3 = getTile(1, 0, -1);
-
-        Set<ChessHex> colour1 = colourBoard(start1, new HashSet<>());
-        Set<ChessHex> colour2 = colourBoard(start2, new HashSet<>());
-        Set<ChessHex> colour3 = colourBoard(start3, new HashSet<>());
-
-        for (ChessHex hex : colour1) {
-            hex.setColour(COLOUR2);
-        }
-        for (ChessHex hex : colour2) {
-            hex.setColour(COLOUR1);
-        }
-        for (ChessHex hex : colour3) {
-            hex.setColour(COLOUR3);
-        }
-    }
-
-    private Set<ChessHex> colourBoard(ChessHex current, Set<ChessHex> visited) {
-        if (current == null) return null;
-        if (!visited.contains(current)) {
-            visited.add(current);
     
-            for (int i = 0; i < 6; i++) {
-                ChessHex h = getTile(addV(current.getCoords(), VECTORS_DIA[i]));
-                colourBoard(h, visited);
-            }
-        }
-        return visited;
-    }
-
-    public Set<ChessHex> getThreatenedTiles(Boolean colour) {
+    public Set<ChessHex> getThreatenedTiles(boolean colour) {
         Set<ChessHex> ret = new HashSet<>();
-        for (GamePiece piece : game.getEnemyPieces(!colour)) {
+        for (GamePiece piece : getEnemyPieces(!colour)) {
             ret.addAll(piece.getThreatenedHexes());
         }
 
         return ret;
-    }
-
-    public ChessHex getTile(int x, int y, int z) {
-        return map.get(new ChessHex(x, y, z));
-    }
-
-    public ChessHex getTile(int[] coords) {
-        return map.get(new ChessHex(coords[0], coords[1], coords[2]));
-    }
-
-    public ChessHex getTile(ChessHex tileCoords) {
-        return map.get(tileCoords);
     }
 
     // REQUIRES: v1, v2 have same size

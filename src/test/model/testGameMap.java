@@ -21,7 +21,7 @@ public class testGameMap {
     @BeforeEach
     void setup() {
         testGameMap = new ChessBoard(5, 5, 5);
-        testChessGame = testGameMap.getGame();
+        testChessGame = new ChessGame(testGameMap, true);
         testTile = new ChessHex(0, 0, 0);
         expected = new HashSet<>();
     }

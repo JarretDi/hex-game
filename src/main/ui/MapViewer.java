@@ -5,9 +5,7 @@ import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
-import main.model.Board.ChessBoard;
-import main.model.Board.ChessHex;
-import main.model.Logger.BoardEvent;
+import main.model.ChessGame;
 import main.model.Logger.BoardLogger;
 
 public class MapViewer extends JFrame implements WindowListener {
@@ -18,19 +16,15 @@ public class MapViewer extends JFrame implements WindowListener {
     private JLabel statusLabel;
     private BoardPanel boardUI;
 
-    private ChessBoard chessBoard;
-
-    public MapViewer(ChessBoard cb) {
+    public MapViewer(ChessGame cg) {
         super("Hexagon Chess");
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-        this.chessBoard = cb;
-
         statusLabel = new JLabel(STATUS_OK);
         add(statusLabel, BorderLayout.NORTH);
 
-        boardUI = new BoardPanel(cb);
+        boardUI = new BoardPanel(cg);
         add(boardUI, BorderLayout.CENTER);
         addWindowListener(this);
         boardUI.setFocusable(true);

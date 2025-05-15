@@ -16,6 +16,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+import main.model.ChessGame;
 import main.model.Board.ChessBoard;
 import main.model.Board.ChessHex;
 import main.model.GamePieces.GamePiece;
@@ -23,12 +24,14 @@ import main.model.GamePieces.King;
 import main.model.Logger.BoardLogger;
 
 public class BoardPanel extends JPanel implements MouseListener, KeyListener {
+    private ChessGame cg;
     private ChessBoard cb;
     private Image backgroundImage;
+    private int turnOffset;
     private final int hexRadius = 42;
     private final int pieceSize = (int) (hexRadius * Math.sqrt(2));
 
-    public BoardPanel(ChessBoard cb) {
+    public BoardPanel(ChessGame cg) {
         super();
         try {
             backgroundImage = ImageIO.read(new File("./src/data/157.jpg"));
@@ -41,7 +44,9 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener {
         }
         addMouseListener(this);
         addKeyListener(this);
-        this.cb = cb;
+        this.cg = cg;
+        cb = cg.getBoard();
+        turnOffset = 0;
     }
 
     @Override
@@ -86,6 +91,7 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
+        if (turnOffset < 0) return;
         int midX = getWidth() / 2;
         int midY = getHeight() / 2;
 
@@ -95,8 +101,8 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener {
         double x1 = ((2.0 / 3.0) * -x) / hexRadius;
         double y1 = (-1.0 / 3.0 * -x + Math.sqrt(3) / 3.0 * -y) / hexRadius;
 
-        ChessHex hex = cb.getTile(cubeRound(x1, y1));
-        cb.getGame().notify(hex);
+        ChessHex hex = cg.getBoard().getTile(cubeRound(x1, y1));
+        cg.notify(hex);
         repaint();
         revalidate();
     }
@@ -165,13 +171,25 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener {
                 break;
             case KeyEvent.VK_LEFT:
                 // handle left
-                this.cb = new ChessBoard(BoardLogger.getInstance().getPrevBoard());
-                repaint();
-                revalidate();
+                turnOffset--;
+                break;
             case KeyEvent.VK_RIGHT :
                 // handle right
+                if (turnOffset < 0) turnOffset++;
                 break;
         }
+        try {
+            cb = new ChessBoard(BoardLogger.getInstance().getBoardFromHistory(cg.getBoard().getTurnCount() + turnOffset));
+        } catch (IndexOutOfBoundsException ex) {
+            if (turnOffset < 0) {
+                turnOffset++;
+            } else {
+                turnOffset = 0;
+                cb = cg.getBoard();
+            }
+        }
+        repaint();
+        revalidate();
     }
 
     @Override

@@ -21,7 +21,7 @@ public class Bishop extends GamePiece {
             // Really should not have got here
         }
     }
-
+    
     public Bishop(Bishop other, ChessHex position) {
         super(other, position);
         image = other.image;

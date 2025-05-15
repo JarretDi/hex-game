@@ -2,14 +2,11 @@ package main.model.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
 import main.model.Board.ChessBoard;
-import main.model.Board.ChessHex;
 
 public class BoardLogger {
     private static BoardLogger logger = new BoardLogger();
-    private List<Map<ChessHex, ChessHex>> history;
+    private List<ChessBoard> history;
     private List<BoardEvent> events;
 
     private BoardLogger() {
@@ -21,8 +18,12 @@ public class BoardLogger {
         return logger;
     }
 
-    public Map<ChessHex, ChessHex> getPrevBoard() {
+    public ChessBoard getPrevBoard() {
         return history.getLast();
+    }
+
+    public ChessBoard getBoardFromHistory(int turn) throws IndexOutOfBoundsException {
+        return history.get(turn);
     }
 
     public List<BoardEvent> getEvents() {
@@ -38,7 +39,7 @@ public class BoardLogger {
     }
 
     public void logBoard(ChessBoard cb) {
-        history.add(cb.duplicateBoard());
+        history.add(new ChessBoard(cb));
     }
 
     public void addEvent(BoardEvent event) {

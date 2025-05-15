@@ -8,6 +8,7 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import main.model.ChessGame;
 import main.model.Board.ChessBoard;
 import main.model.Board.ChessHex;
 import main.model.GamePieces.GamePiece;
@@ -15,6 +16,7 @@ import main.model.GamePieces.King;
 import main.model.GamePieces.Pawn;
 
 public class testPiece {
+    ChessGame cg;
     ChessBoard cb;
     GamePiece whiteKing;
     ChessHex testTile;
@@ -24,6 +26,7 @@ public class testPiece {
     @BeforeEach
     void setup() {
         cb = new ChessBoard(5, 5, 5);
+        cg = new ChessGame(cb, true);
         testTile = new ChessHex(0, -2, 2);
         whiteKing = new King(true, new ChessHex(0, 0, 0));
         expected = new HashSet<>();
