@@ -16,7 +16,7 @@ public class Pawn extends GamePiece {
     
 
     // Constructs an unmoved pawn at the given position with the given colour
-    public Pawn(Boolean colour, ChessHex position) {
+    public Pawn(boolean colour, ChessHex position) {
         super(colour, position);
 
         forwardVector = getColour() ? ChessBoard.VECTOR_ADJ_N : ChessBoard.VECTOR_ADJ_S;
@@ -70,6 +70,8 @@ public class Pawn extends GamePiece {
             ret.add(tileWest);
         }
 
+        filterCriticals(ret);
+
         return ret;
     }
 
@@ -83,6 +85,13 @@ public class Pawn extends GamePiece {
         ret.add(tileEast);
         ret.add(tileWest);
 
+        return ret;
+    }
+
+    @Override
+    public Set<ChessHex> getCriticalHexes() {
+        Set<ChessHex> ret = new HashSet<>();
+        ret.add(getPosition());
         return ret;
     }
 

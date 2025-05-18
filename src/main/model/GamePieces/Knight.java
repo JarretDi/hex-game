@@ -24,7 +24,7 @@ public class Knight extends GamePiece {
     private static final int[] KV12 = ChessBoard.addV(ChessBoard.VECTOR_DIA_NW, ChessBoard.VECTOR_ADJ_N);
     private static final int[][] KNIGHT_VECTORS = {KV1, KV2, KV3, KV4, KV5, KV6, KV7, KV8, KV9, KV10, KV11, KV12};
 
-    public Knight(Boolean colour, ChessHex position) {
+    public Knight(boolean colour, ChessHex position) {
         super(colour, position);
         try {
             if (getColour() == GamePiece.WHITE) {
@@ -55,6 +55,31 @@ public class Knight extends GamePiece {
             }
         }
 
+        filterCriticals(ret);
+
+        return ret;
+    }
+
+    @Override
+    public Set<ChessHex> getThreatenedHexes() {
+        ChessBoard cb = getBoard();
+
+        Set<ChessHex> ret = new HashSet<>();
+
+        for (int i = 0; i < KNIGHT_VECTORS.length; i++) {
+            ChessHex tileToAdd = cb.getTile(ChessBoard.addV(getPosition().getCoords(), KNIGHT_VECTORS[i]));
+            if (tileToAdd != null && !tileToAdd.containsAlliedPiece(this)) {
+                ret.add(tileToAdd);
+            }
+        }
+
+        return ret;
+    }
+
+    @Override
+    public Set<ChessHex> getCriticalHexes() {
+        Set<ChessHex> ret = new HashSet<>();
+        ret.add(getPosition());
         return ret;
     }
 

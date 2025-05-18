@@ -1,6 +1,7 @@
 package main.model.GamePieces;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.imageio.ImageIO;
@@ -9,7 +10,7 @@ import main.model.Board.ChessBoard;
 import main.model.Board.ChessHex;
 
 public class Rook extends GamePiece {
-    public Rook(Boolean colour, ChessHex position) {
+    public Rook(boolean colour, ChessHex position) {
         super(colour, position);
         try {
             if (getColour() == GamePiece.WHITE) {
@@ -29,7 +30,31 @@ public class Rook extends GamePiece {
 
     @Override
     public Set<ChessHex> getMovableHexes() {
+        Set<ChessHex> ret = getBoard().getAdjacentLines(getPosition());
+        filterCriticals(ret);
+        return ret;
+    }
+
+    @Override
+    public Set<ChessHex> getThreatenedHexes() {
         return getBoard().getAdjacentLines(getPosition());
+    }
+
+    @Override
+    public Set<ChessHex> getCriticalHexes() {
+        Set<ChessHex> criticalHexes = new HashSet<>();
+
+        int[] start = getPosition().getCoords();
+        int[] end = getPosition().getBoard().getKing(!getColour()).getPosition().getCoords();
+        int[] direction = ChessBoard.getDirection(start, end);
+        
+
+        while (!ChessBoard.sameVector(start, end)) {
+            criticalHexes.add(getBoard().getTile(start));
+            start = ChessBoard.addV(start, direction);
+        }
+
+        return criticalHexes;
     }
 
     @Override

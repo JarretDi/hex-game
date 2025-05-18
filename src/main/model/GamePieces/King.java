@@ -2,6 +2,7 @@ package main.model.GamePieces;
 
 import java.awt.Image;
 import java.io.File;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.imageio.ImageIO;
@@ -10,7 +11,7 @@ import main.model.Board.ChessBoard;
 import main.model.Board.ChessHex;
 
 public class King extends GamePiece {
-    public King(Boolean colour, ChessHex position) {
+    public King(boolean colour, ChessHex position) {
         super(colour, position);
         try {
             if (getColour() == GamePiece.WHITE) {
@@ -30,11 +31,13 @@ public class King extends GamePiece {
 
     @Override
     public Set<ChessHex> getMovableHexes() {
-        Set<ChessHex> threatendHexes = getThreatenedHexes();
+        Set<ChessHex> moveable = getThreatenedHexes();
 
-        threatendHexes.removeAll(getBoard().getThreatenedTiles(!getColour()));
+        for (ChessHex hex : getBoard().getThreatenedTiles(!getColour())) {
+            moveable.remove(hex);
+        }
 
-        return threatendHexes;
+        return moveable;
     }
 
     @Override
@@ -48,6 +51,11 @@ public class King extends GamePiece {
         adj.addAll(dia);
 
         return adj;
+    }
+
+    @Override
+    public Set<ChessHex> getCriticalHexes() {
+        return new HashSet<>();
     }
 
     public Boolean isInCheck() {

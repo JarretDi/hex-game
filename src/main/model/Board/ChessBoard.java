@@ -12,7 +12,6 @@ import java.util.Set;
 import main.model.GamePieces.GamePiece;
 import main.model.GamePieces.King;
 import main.model.GamePieces.PieceFactory;
-import main.model.Logger.BoardLogger;
 import main.modelOldRpg.map.TileNotFoundException;
 
 // Represents the minimum amount of information needed to reconstruct a Chessboard
@@ -216,6 +215,11 @@ public class ChessBoard implements Iterable<ChessHex> {
         return colour ?  getBlackPieces() : getWhitePieces();
     }
 
+    // returns whether the side of the current turn is in check
+    public boolean isInCheck() {
+        return (getKing(turn).isInCheck());
+    }
+
     public King getKing(boolean colour) {
         for (GamePiece piece : pieces) {
             if (piece.getType() == "K" && piece.getColour() == colour) {
@@ -223,6 +227,39 @@ public class ChessBoard implements Iterable<ChessHex> {
             }
         }
         return null;
+    }
+
+    public boolean isCheckmate() {
+        for (GamePiece pc : getEnemyPieces(!turn)) {
+            if (pc.getMovableHexes().size() != 0) return false;
+        }
+        return true;
+    }
+
+    public Set<ChessHex> findCriticalHexes() {
+        List<GamePiece> checkGivingPieces = new ArrayList<>();
+
+        ChessHex kingPos = getKing(turn).getPosition();
+        for (GamePiece pc : getEnemyPieces(turn)) {
+            if (pc.getThreatenedHexes().contains(kingPos)) {
+                checkGivingPieces.add(pc);
+            }
+        }
+
+        Set<ChessHex> ret = new HashSet<>();
+
+        for (ChessHex hx : checkGivingPieces.get(0).getCriticalHexes()) {
+            boolean shouldAdd = true;
+            for (GamePiece gp : checkGivingPieces) {
+                if (!gp.getCriticalHexes().contains(hx)) {
+                    shouldAdd = false;
+                }
+            }
+            if (shouldAdd) {
+                ret.add(hx);
+            }
+        }
+        return ret;
     }
 
     // EFFECTS: returns the set of empty tiles that are adjacent to a given tile
@@ -312,6 +349,7 @@ public class ChessBoard implements Iterable<ChessHex> {
     }
 
     // EFFECTS: returns a set of tiles in all diagonal directions
+    // stops when it hits a piece, or the end of the board
     // if tile is not in set, throws TileNotFoundException
     public Set<ChessHex> getDiagonalLines(ChessHex tile) {
         if (!map.containsKey(tile)) {
@@ -323,13 +361,13 @@ public class ChessBoard implements Iterable<ChessHex> {
         Set<ChessHex> ret = new HashSet<>();
 
         for (int i = 0; i < 6; i++) {
-            getDiagonalLines(tile, ret, i);
+            getDiagonalLine(tile, ret, i);
         }
 
         return ret;
     }
 
-    private void getDiagonalLines(ChessHex tile, Set<ChessHex> ret, int i) {
+    public void getDiagonalLine(ChessHex tile, Set<ChessHex> ret, int i) {
         int j = 1;
 
         while (true) {
@@ -344,6 +382,40 @@ public class ChessBoard implements Iterable<ChessHex> {
                 j++;
             }
         }
+    }
+
+    // REQUIRES: the given positions are in some line (adjacent or diagonal)
+    // EFFECTS: given two positions, returns the direction vector (with 'length' 1) that connects them
+    public static int[] getDirection(int[] pos1, int[] pos2) {
+        int[] dist = subV(pos2, pos1);
+
+        //check if its an adjacent or diagonal directon
+        boolean adj = false;
+        int mag = 0;
+        for (int i = 0; i < dist.length; i++) {
+            if (dist[i] == 0) {
+                adj = true;
+            }
+            if (Math.abs(dist[i]) > mag) {
+                mag = Math.abs(dist[i]);
+            }
+        }
+        if (adj) {
+            return divV(dist, mag);
+        } else {
+            return divV(dist, mag / 2);
+        }
+    }
+
+    public static boolean sameVector(int[] pos1, int[] pos2) {
+        boolean same = true;
+        for (int i = 0; i < pos1.length; i++) {
+            if (pos1[i] != pos2[i]) {
+                same = false;
+                break;
+            }
+        }
+        return same;
     }
     
     public Set<ChessHex> getThreatenedTiles(boolean colour) {
@@ -367,12 +439,35 @@ public class ChessBoard implements Iterable<ChessHex> {
         return v3;
     }
 
+    // REQUIRES: v1, v2 have same size
+    // EFFECTS: returns a vector consisted of the two subtracted element-wise
+    public static int[] subV(int[] v1, int[] v2) {
+        int[] v3 = new int[v1.length];
+
+        for (int i = 0; i < v1.length; i++) {
+            v3[i] = v1[i] - v2[i];
+        }
+
+        return v3;
+    }
+
     // EFFECTS: returns a vector consisted of a vector multiplied by a scalar
     public static int[] multV(int[] v, int scalar) {
         int[] v2 = new int[v.length];
 
         for (int i = 0; i < v.length; i++) {
             v2[i] = v[i] * scalar;
+        }
+
+        return v2;
+    }
+
+    // EFFECTS: returns a vector consisted of a vector divided by a scalar
+    public static int[] divV(int[] v, int scalar) {
+        int[] v2 = new int[v.length];
+
+        for (int i = 0; i < v.length; i++) {
+            v2[i] = v[i] / scalar;
         }
 
         return v2;

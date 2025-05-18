@@ -1,6 +1,7 @@
 package main.model.GamePieces;
 
 import java.awt.Image;
+import java.util.Iterator;
 import java.util.Set;
 
 import main.model.Observer;
@@ -8,17 +9,18 @@ import main.model.Board.ChessBoard;
 import main.model.Board.ChessHex;
 
 public abstract class GamePiece implements Observer {
-    public static final Boolean WHITE = true;
-    public static final Boolean BLACK = false;
+    public static final boolean WHITE = true;
+    public static final boolean BLACK = false;
 
     private ChessHex position;
-    private Boolean hasMoved;
-    private Boolean colour;
-    private Boolean isSelected;
+    private boolean hasMoved;
+    private boolean colour;
+
+    private boolean isSelected;
 
     protected Image image;
 
-    public GamePiece(Boolean colour, ChessHex position) {
+    public GamePiece(boolean colour, ChessHex position) {
         this.hasMoved = false;
         this.colour = colour;
         this.position = position;
@@ -38,6 +40,25 @@ public abstract class GamePiece implements Observer {
 
     public Set<ChessHex> getThreatenedHexes() {
         return getMovableHexes();
+    }
+
+    // REQUIRES: Other side is currently in check
+    // EFFECTS: Based on the game piece, if this piece is giving check to the opponent,
+    // represents the hexes that can be moved to in order to stop this piece from giving it
+    // i.e. some pieces can be blocked, most can be captured, King cannot have any
+    public abstract Set<ChessHex> getCriticalHexes();
+
+    public void filterCriticals(Set<ChessHex> moves) {
+        if (getBoard().getKing(getColour()).isInCheck()) {
+            Set<ChessHex> criticals = getBoard().findCriticalHexes();
+            Iterator<ChessHex> it = moves.iterator();
+            
+            while (it.hasNext()) {
+                if (!criticals.contains(it.next())) {
+                    it.remove();
+                }
+            }
+        }
     }
 
     public abstract String getType();
@@ -86,19 +107,19 @@ public abstract class GamePiece implements Observer {
         this.position = null;
     }
 
-    public Boolean getColour() {
+    public boolean getColour() {
         return colour;
     }
 
-    public Boolean isOnMap() {
+    public boolean isOnMap() {
         return position != null;
     }
 
-    public Boolean isSelected() {
+    public boolean isSelected() {
         return isSelected;
     }
     
-    public Boolean hasMoved() {
+    public boolean hasMoved() {
         return hasMoved;
     }
 

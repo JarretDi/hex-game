@@ -1,6 +1,7 @@
 package main.model.GamePieces;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.imageio.ImageIO;
@@ -9,7 +10,7 @@ import main.model.Board.ChessBoard;
 import main.model.Board.ChessHex;
 
 public class Queen extends GamePiece {
-    public Queen(Boolean colour, ChessHex position) {
+    public Queen(boolean colour, ChessHex position) {
         super(colour, position);
         try {
             if (getColour() == GamePiece.WHITE) {
@@ -37,7 +38,39 @@ public class Queen extends GamePiece {
 
         adj.addAll(dia);
 
+        filterCriticals(adj);
+
         return adj;
+    }
+
+    @Override
+    public Set<ChessHex> getThreatenedHexes() {
+        ChessBoard cb = getBoard();
+        ChessHex pos = getPosition();
+
+        Set<ChessHex> adj = cb.getAdjacentLines(pos);
+        Set<ChessHex> dia = cb.getDiagonalLines(pos);
+
+        adj.addAll(dia);
+
+        return adj;
+    }
+    
+    @Override
+    public Set<ChessHex> getCriticalHexes() {
+        Set<ChessHex> criticalHexes = new HashSet<>();
+
+        int[] start = getPosition().getCoords();
+        int[] end = getPosition().getBoard().getKing(!getColour()).getPosition().getCoords();
+        int[] direction = ChessBoard.getDirection(start, end);
+        
+
+        while (!ChessBoard.sameVector(start, end)) {
+            criticalHexes.add(getBoard().getTile(start));
+            start = ChessBoard.addV(start, direction);
+        }
+
+        return criticalHexes;
     }
 
     @Override

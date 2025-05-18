@@ -5,7 +5,6 @@ import java.util.Arrays;
 
 import main.model.Observer;
 import main.model.GamePieces.GamePiece;
-import main.model.GamePieces.Pawn;
 
 public class ChessHex implements Observer {
     private int[] coords = new int[3];

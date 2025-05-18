@@ -1,5 +1,8 @@
 package main.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import main.model.Board.ChessBoard;
 import main.model.Board.ChessHex;
 import main.model.GamePieces.*;
@@ -120,7 +123,7 @@ public class ChessGame extends Observable {
         piece.move();
         selectPiece(null);
 
-        if (cb.getKing(!cb.getTurn()).isInCheck()) {
+        if (cb.isInCheck()) {
             isCheck = true;
         }
 
@@ -129,7 +132,9 @@ public class ChessGame extends Observable {
         BoardLogger.getInstance().logBoard(cb);
         BoardLogger.getInstance().addEvent(new BoardEvent(piece, originalPosition, newPosition, isCapture, isCheck));
 
-        resolveCheck();
+        if (cb.isCheckmate()) {
+            System.out.println("Checkmate!");
+        }
     }
 
     private boolean validMove(GamePiece piece, ChessHex position) {
@@ -139,13 +144,22 @@ public class ChessGame extends Observable {
         if (!piece.getMovableHexes().contains(position)) {
             return false;
         }
+        // if (cb.getKing(cb.getTurn()).isInCheck()) {
+        //     // find the piece(s) giving check
+        //     Set<GamePiece> checkingPieces = findCheckGivingPieces();
+        //     // check for blocks and captures
+
+        //     // if its double check, you can only move the king
+        //     if (checkingPieces.size() > 1 && piece.getType() != "K") {
+        //         return false;
+        //     }
+
+
+            
+        // }
         return true;
     }
-
-    private void resolveCheck() {
-        
-    }
-        
+    
     public void notify(ChessHex hex) {
         if (hex == null || hex.containsPiece() && selectedPiece == hex.getPiece()) {
             selectPiece(null);

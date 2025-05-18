@@ -1,6 +1,7 @@
 package main.model.GamePieces;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.imageio.ImageIO;
@@ -21,7 +22,7 @@ public class Bishop extends GamePiece {
             // Really should not have got here
         }
     }
-    
+
     public Bishop(Bishop other, ChessHex position) {
         super(other, position);
         image = other.image;
@@ -29,7 +30,31 @@ public class Bishop extends GamePiece {
 
     @Override
     public Set<ChessHex> getMovableHexes() {
+        Set<ChessHex> ret = getBoard().getDiagonalLines(getPosition());
+        filterCriticals(ret);
+        return ret;
+    }
+
+    @Override
+    public Set<ChessHex> getThreatenedHexes() {
         return getBoard().getDiagonalLines(getPosition());
+    }
+
+    @Override
+    public Set<ChessHex> getCriticalHexes() {
+        Set<ChessHex> criticalHexes = new HashSet<>();
+
+        int[] start = getPosition().getCoords();
+        int[] end = getPosition().getBoard().getKing(!getColour()).getPosition().getCoords();
+        int[] direction = ChessBoard.getDirection(start, end);
+        
+
+        while (!ChessBoard.sameVector(start, end)) {
+            criticalHexes.add(getBoard().getTile(start));
+            start = ChessBoard.addV(start, direction);
+        }
+
+        return criticalHexes;
     }
 
     @Override
