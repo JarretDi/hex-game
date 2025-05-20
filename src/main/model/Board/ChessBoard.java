@@ -264,7 +264,7 @@ public class ChessBoard implements Iterable<ChessHex> {
 
     // EFFECTS: returns the set of empty tiles that are adjacent to a given tile
     // if tile is not in set, throws TileNotFoundException
-    public Set<ChessHex> getAdjacentTiles(ChessHex tile) {
+    public Set<ChessHex> getAdjacentTiles(ChessHex tile, boolean includeAllies) {
         if (!map.containsKey(tile)) {
             throw new TileNotFoundException();
         }
@@ -275,7 +275,7 @@ public class ChessBoard implements Iterable<ChessHex> {
 
         for (int i = 0; i < 6; i++) {
             ChessHex tileToAdd = getTile(addV(tile.getCoords(), VECTORS_ADJ[i]));
-            if (tileToAdd == null || tileToAdd.containsAlliedPiece(tile.getPiece())) {
+            if (tileToAdd == null || (!includeAllies && tileToAdd.containsAlliedPiece(tile.getPiece()))) {
                 continue;
             } else {
                 ret.add(tileToAdd);
@@ -287,7 +287,7 @@ public class ChessBoard implements Iterable<ChessHex> {
 
     // EFFECTS: returns the set of empty tiles that are diagonal to a given tile
     // if tile is not in set, throws TileNotFoundException
-    public Set<ChessHex> getDiagonalTiles(ChessHex tile) {
+    public Set<ChessHex> getDiagonalTiles(ChessHex tile, boolean includeAllies) {
         if (!map.containsKey(tile)) {
             throw new TileNotFoundException();
         }
@@ -298,7 +298,7 @@ public class ChessBoard implements Iterable<ChessHex> {
 
         for (int i = 0; i < 6; i++) {
             ChessHex tileToAdd = getTile(addV(tile.getCoords(), VECTORS_DIA[i]));
-            if (tileToAdd == null || tileToAdd.containsAlliedPiece(tile.getPiece())) {
+            if (tileToAdd == null || (!includeAllies && tileToAdd.containsAlliedPiece(tile.getPiece()))) {
                 continue;
             } else {
                 ret.add(tileToAdd);
@@ -310,7 +310,7 @@ public class ChessBoard implements Iterable<ChessHex> {
 
     // EFFECTS: returns a set of tiles in all adjacent directions
     // if tile is not in set, throws TileNotFoundException
-    public Set<ChessHex> getAdjacentLines(ChessHex tile) {
+    public Set<ChessHex> getAdjacentLines(ChessHex tile, boolean includeAllies) {
         if (!map.containsKey(tile)) {
             throw new TileNotFoundException();
         }
@@ -320,7 +320,7 @@ public class ChessBoard implements Iterable<ChessHex> {
         Set<ChessHex> ret = new HashSet<>();
 
         for (int i = 0; i < 6; i++) {
-            getAdjacentLine(tile, ret, i);
+            getAdjacentLine(tile, ret, i, includeAllies);
         }
 
         return ret;
@@ -331,14 +331,14 @@ public class ChessBoard implements Iterable<ChessHex> {
     //          if the next tile being added is an allied piece, stop
     //          if the next tile is an enemy piece, add that hex and then stop
     //          else continue adding tiles along that line
-    private void getAdjacentLine(ChessHex tile, Set<ChessHex> ret, int i) {
+    private void getAdjacentLine(ChessHex tile, Set<ChessHex> ret, int i, boolean includeAllies) {
         int j = 1;
 
         while (true) {
             ChessHex tileToAdd = getTile((addV(tile.getCoords(), multV(VECTORS_ADJ[i], j))));
-            if (tileToAdd == null || tileToAdd.containsAlliedPiece(tile.getPiece())) {
+            if (tileToAdd == null || (!includeAllies && tileToAdd.containsAlliedPiece(tile.getPiece()))) {
                 break;
-            } else if (tileToAdd.containsEnemyPiece(tile.getPiece())) {
+            } else if (tileToAdd.containsEnemyPiece(tile.getPiece()) || (includeAllies && tileToAdd.containsAlliedPiece(tile.getPiece()))) {
                 ret.add(tileToAdd);
                 break;
             } else {
@@ -351,7 +351,7 @@ public class ChessBoard implements Iterable<ChessHex> {
     // EFFECTS: returns a set of tiles in all diagonal directions
     // stops when it hits a piece, or the end of the board
     // if tile is not in set, throws TileNotFoundException
-    public Set<ChessHex> getDiagonalLines(ChessHex tile) {
+    public Set<ChessHex> getDiagonalLines(ChessHex tile, boolean includeAllies) {
         if (!map.containsKey(tile)) {
             throw new TileNotFoundException();
         }
@@ -361,20 +361,20 @@ public class ChessBoard implements Iterable<ChessHex> {
         Set<ChessHex> ret = new HashSet<>();
 
         for (int i = 0; i < 6; i++) {
-            getDiagonalLine(tile, ret, i);
+            getDiagonalLine(tile, ret, i, includeAllies);
         }
 
         return ret;
     }
 
-    public void getDiagonalLine(ChessHex tile, Set<ChessHex> ret, int i) {
+    public void getDiagonalLine(ChessHex tile, Set<ChessHex> ret, int i, boolean includeAllies) {
         int j = 1;
 
         while (true) {
             ChessHex tileToAdd = getTile((addV(tile.getCoords(), multV(VECTORS_DIA[i], j))));
-            if (tileToAdd == null || tileToAdd.containsAlliedPiece(tile.getPiece())) {
+            if (tileToAdd == null || (!includeAllies && tileToAdd.containsAlliedPiece(tile.getPiece()))) {
                 break;
-            } else if (tileToAdd.containsEnemyPiece(tile.getPiece())) {
+            } else if (tileToAdd.containsEnemyPiece(tile.getPiece()) || (includeAllies && tileToAdd.containsAlliedPiece(tile.getPiece()))) {
                 ret.add(tileToAdd);
                 break;
             } else {
@@ -421,7 +421,9 @@ public class ChessBoard implements Iterable<ChessHex> {
     public Set<ChessHex> getThreatenedTiles(boolean colour) {
         Set<ChessHex> ret = new HashSet<>();
         for (GamePiece piece : getEnemyPieces(!colour)) {
-            ret.addAll(piece.getThreatenedHexes());
+            if (piece.isOnMap()) {
+                ret.addAll(piece.getThreatenedHexes());
+            }
         }
 
         return ret;

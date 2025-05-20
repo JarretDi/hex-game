@@ -30,14 +30,20 @@ public class Rook extends GamePiece {
 
     @Override
     public Set<ChessHex> getMovableHexes() {
-        Set<ChessHex> ret = getBoard().getAdjacentLines(getPosition());
+        Set<ChessHex> ret = getBoard().getAdjacentLines(getPosition(), false);
+        
         filterCriticals(ret);
+        managePins(ret);
+
         return ret;
     }
 
     @Override
     public Set<ChessHex> getThreatenedHexes() {
-        return getBoard().getAdjacentLines(getPosition());
+        if (!isOnMap()) {
+            return new HashSet<>();
+        }
+        return getBoard().getAdjacentLines(getPosition(), true);
     }
 
     @Override

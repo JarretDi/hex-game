@@ -71,7 +71,6 @@ public class ChessHex implements Observer {
         GamePiece temp = this.piece;
         this.piece = null;
         return temp;
-
     }
 
     public Boolean containsPiece() {

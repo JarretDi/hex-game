@@ -71,6 +71,7 @@ public class Pawn extends GamePiece {
         }
 
         filterCriticals(ret);
+        managePins(ret);
 
         return ret;
     }

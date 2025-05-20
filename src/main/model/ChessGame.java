@@ -116,6 +116,7 @@ public class ChessGame extends Observable {
             GamePiece enemyPiece = newPosition.removePiece();
             cb.getPieces().remove(enemyPiece);
             cb.getCapturedPieces().add(enemyPiece);
+            observers.remove(enemyPiece);
             isCapture = true;
         }
 
@@ -144,19 +145,7 @@ public class ChessGame extends Observable {
         if (!piece.getMovableHexes().contains(position)) {
             return false;
         }
-        // if (cb.getKing(cb.getTurn()).isInCheck()) {
-        //     // find the piece(s) giving check
-        //     Set<GamePiece> checkingPieces = findCheckGivingPieces();
-        //     // check for blocks and captures
-
-        //     // if its double check, you can only move the king
-        //     if (checkingPieces.size() > 1 && piece.getType() != "K") {
-        //         return false;
-        //     }
-
-
-            
-        // }
+        
         return true;
     }
     

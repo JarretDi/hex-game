@@ -56,19 +56,23 @@ public class Knight extends GamePiece {
         }
 
         filterCriticals(ret);
+        managePins(ret);
 
         return ret;
     }
 
     @Override
     public Set<ChessHex> getThreatenedHexes() {
+        if (!isOnMap()) {
+            return new HashSet<>();
+        }
         ChessBoard cb = getBoard();
 
         Set<ChessHex> ret = new HashSet<>();
 
         for (int i = 0; i < KNIGHT_VECTORS.length; i++) {
             ChessHex tileToAdd = cb.getTile(ChessBoard.addV(getPosition().getCoords(), KNIGHT_VECTORS[i]));
-            if (tileToAdd != null && !tileToAdd.containsAlliedPiece(this)) {
+            if (tileToAdd != null) {
                 ret.add(tileToAdd);
             }
         }

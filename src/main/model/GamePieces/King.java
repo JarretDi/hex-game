@@ -31,7 +31,8 @@ public class King extends GamePiece {
 
     @Override
     public Set<ChessHex> getMovableHexes() {
-        Set<ChessHex> moveable = getThreatenedHexes();
+        Set<ChessHex> moveable = getBoard().getAdjacentTiles(getPosition(), false);
+        moveable.addAll(getBoard().getDiagonalTiles(getPosition(), false));
 
         for (ChessHex hex : getBoard().getThreatenedTiles(!getColour())) {
             moveable.remove(hex);
@@ -45,8 +46,8 @@ public class King extends GamePiece {
         ChessBoard cb = getBoard();
         ChessHex pos = getPosition();
 
-        Set<ChessHex> adj = cb.getAdjacentTiles(pos);
-        Set<ChessHex> dia = cb.getDiagonalTiles(pos);
+        Set<ChessHex> adj = cb.getAdjacentTiles(pos, true);
+        Set<ChessHex> dia = cb.getDiagonalTiles(pos, true);
 
         adj.addAll(dia);
 

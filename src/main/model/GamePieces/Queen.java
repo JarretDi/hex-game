@@ -33,23 +33,27 @@ public class Queen extends GamePiece {
         ChessBoard cb = getBoard();
         ChessHex pos = getPosition();
 
-        Set<ChessHex> adj = cb.getAdjacentLines(pos);
-        Set<ChessHex> dia = cb.getDiagonalLines(pos);
+        Set<ChessHex> adj = cb.getAdjacentLines(pos, false);
+        Set<ChessHex> dia = cb.getDiagonalLines(pos, false);
 
         adj.addAll(dia);
 
         filterCriticals(adj);
+        managePins(adj);
 
         return adj;
     }
 
     @Override
     public Set<ChessHex> getThreatenedHexes() {
+        if (!isOnMap()) {
+            return new HashSet<>();
+        }
         ChessBoard cb = getBoard();
         ChessHex pos = getPosition();
 
-        Set<ChessHex> adj = cb.getAdjacentLines(pos);
-        Set<ChessHex> dia = cb.getDiagonalLines(pos);
+        Set<ChessHex> adj = cb.getAdjacentLines(pos, true);
+        Set<ChessHex> dia = cb.getDiagonalLines(pos, true);
 
         adj.addAll(dia);
 
