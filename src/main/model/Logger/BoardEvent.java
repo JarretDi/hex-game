@@ -4,25 +4,25 @@ import main.model.Board.ChessHex;
 import main.model.GamePieces.GamePiece;
 
 public class BoardEvent {
-    private String msg;
+    private GamePiece piece;
+    private ChessHex origin;
+    private ChessHex to;
+    private boolean capture;
+    private String promote;
+    private boolean check;
+    private boolean checkmate;
 
-    GamePiece piece;
-    ChessHex origin;
-    ChessHex to;
-    Boolean capture;
-    Boolean check;
-
-    public BoardEvent(GamePiece piece, ChessHex origin, ChessHex to, Boolean capture, Boolean check) {
-        msg = piece.getType() + " " + origin.toString() + (capture? " x " : " ") + to.toString() + (check? "+" : "");
-
+    public BoardEvent(GamePiece piece, ChessHex origin, ChessHex to, boolean capture, String promote, boolean check, boolean checkmate) {
         this.piece = piece;
         this.origin = origin;
         this.to = to;
         this.capture = capture;
+        this.promote = promote;
         this.check = check;
+        this.checkmate = checkmate;
     }
 
     public String getMsg() {
-        return msg;
+        return piece.getType() + " " + origin.toString() + (capture? " x " : " ") + to.toString() + promote + (check? "+" : "") + (checkmate? "#" : "");
     }
 }

@@ -123,6 +123,7 @@ public class BoardPanel extends JPanel implements MouseListener, KeyListener {
             finaly = (int) (y2 + Math.round(y + 0.5 * x));
         }
 
+        System.out.println(finalx + ", " + finaly + ", " + -(finalx + finaly));
         return new ChessHex(finalx, finaly, -(finalx + finaly));
     }
 

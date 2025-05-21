@@ -3,6 +3,10 @@ package main.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.swing.ImageIcon;
+import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
+
 import main.model.Board.ChessBoard;
 import main.model.Board.ChessHex;
 import main.model.GamePieces.*;
@@ -26,11 +30,11 @@ public class ChessGame extends Observable {
             placePawns();
             placePieces();
             BoardLogger.getInstance().logBoard(cb);
-        } 
+        }
 
         addObservers();
     }
-    
+
     private void clearBoard() {
         for (ChessHex hex : cb) {
             hex.removePiece();
@@ -100,13 +104,16 @@ public class ChessGame extends Observable {
     // MODIFIES: ChessBoard
     // EFFECTS: moves a given piece to a specified hex
     // if postion.containsEnemyPiece(piece) captures it, removing it from pieces
-    // if the given position is not in piece.getMovableHexes() or it isn't that players turn
+    // if the given position is not in piece.getMovableHexes() or it isn't that
+    // players turn
     // throws InvalidMoveException
     public void move(GamePiece piece, ChessHex newPosition) throws InvalidMoveException {
         ChessHex originalPosition = piece.getPosition();
         newPosition = cb.getTile(newPosition);
-        Boolean isCapture = false;
-        Boolean isCheck = false;
+        boolean isCapture = false;
+        String promote = "";
+        boolean isCheck = false;
+        boolean isCheckmate = false;
 
         if (!validMove(piece, newPosition)) {
             throw new InvalidMoveException();
@@ -124,17 +131,76 @@ public class ChessGame extends Observable {
         piece.move();
         selectPiece(null);
 
+        promote = checkPromotions(piece, newPosition);
+
         if (cb.isInCheck()) {
             isCheck = true;
+        }
+        if (cb.isCheckmate()) {
+            isCheckmate = true;
+            isCheck = false;
+            notifyObservers(this, "Checkmate");
         }
 
         cb.swapTurn();
 
         BoardLogger.getInstance().logBoard(cb);
-        BoardLogger.getInstance().addEvent(new BoardEvent(piece, originalPosition, newPosition, isCapture, isCheck));
+        BoardLogger.getInstance()
+                .addEvent(
+                        new BoardEvent(piece, originalPosition, newPosition, isCapture, promote, isCheck, isCheckmate));
+    }
 
-        if (cb.isCheckmate()) {
-            System.out.println("Checkmate!");
+    // EFFECTS: checks to see whether a pawn has landed on a promotion square
+    // if one has, prompt user for input on what to promote to
+    // then, sends out a message of promotion, and then returns the promotion
+    // notation
+    private String checkPromotions(GamePiece piece, ChessHex newPosition) {
+        if (piece.getType() != "p" || !((Pawn) piece).getPromotionHexes().contains(newPosition)) {
+            return "";
+        }
+
+        ImageIcon[] icons = getPieceIcons(piece.getColour());
+        int selection = JOptionPane.showOptionDialog(null, 
+                "What does this pawn promote to?", 
+                "Promotion", 
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.QUESTION_MESSAGE, 
+                piece.getColour() ? new ImageIcon("./src/data/pieces/white-pawn.png") : new ImageIcon("./src/data/pieces/black-pawn.png"),
+                icons, icons[0]);
+
+        switch (selection) {
+            case 0:
+                notifyObservers(piece, "Q promote");
+                return " = Q";
+            case 1:
+                notifyObservers(piece, "N promote");
+                return " = N";
+            case 2:
+                notifyObservers(piece, "R promote");
+                return " = R";
+            case 3:
+                notifyObservers(piece, "B promote");
+                return " = B";
+            default:
+                return "";
+        }
+    }
+
+    private ImageIcon[] getPieceIcons(boolean colour) {
+        if (colour == GamePiece.WHITE) {
+            ImageIcon WQueen = new ImageIcon("./src/data/pieces/white-queen.png");
+            ImageIcon WKnight = new ImageIcon("./src/data/pieces/white-knight.png");
+            ImageIcon WRook = new ImageIcon("./src/data/pieces/white-rook.png");
+            ImageIcon WBishop = new ImageIcon("./src/data/pieces/white-bishop.png");
+            ImageIcon[] ret = { WQueen, WKnight, WRook, WBishop };
+            return ret;
+        } else {
+            ImageIcon BQueen = new ImageIcon("./src/data/pieces/black-queen.png");
+            ImageIcon BKnight = new ImageIcon("./src/data/pieces/black-knight.png");
+            ImageIcon BRook = new ImageIcon("./src/data/pieces/black-rook.png");
+            ImageIcon BBishop = new ImageIcon("./src/data/pieces/black-bishop.png");
+            ImageIcon[] ret = { BQueen, BKnight, BRook, BBishop };
+            return ret;
         }
     }
 
@@ -145,14 +211,14 @@ public class ChessGame extends Observable {
         if (!piece.getMovableHexes().contains(position)) {
             return false;
         }
-        
+
         return true;
     }
-    
+
     public void notify(ChessHex hex) {
         if (hex == null || hex.containsPiece() && selectedPiece == hex.getPiece()) {
             selectPiece(null);
-        } else if (hex.containsPiece() && (selectedPiece == null  || hex.getPiece().getColour() == cb.getTurn())) {
+        } else if (hex.containsPiece() && (selectedPiece == null || hex.getPiece().getColour() == cb.getTurn())) {
             selectPiece(hex.getPiece());
         } else if (selectedPiece != null && selectedPiece.getMovableHexes().contains(hex)) {
             try {
@@ -160,7 +226,7 @@ public class ChessGame extends Observable {
             } catch (InvalidMoveException e) {
                 System.out.println("Invalid move");
             }
-        } 
+        }
     }
 
     public void selectPiece(GamePiece piece) {
