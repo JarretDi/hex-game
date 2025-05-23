@@ -31,8 +31,8 @@ public class Bishop extends GamePiece {
     @Override
     public Set<ChessHex> getMovableHexes() {
         Set<ChessHex> ret = getBoard().getDiagonalLines(getPosition(), false);
-        filterCriticals(ret);
-        managePins(ret);
+        //filterCriticals(ret);
+        filterChecks(ret);
         return ret;
     }
 

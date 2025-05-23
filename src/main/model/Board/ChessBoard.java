@@ -215,9 +215,9 @@ public class ChessBoard implements Iterable<ChessHex> {
         return colour ?  getBlackPieces() : getWhitePieces();
     }
 
-    // returns whether the side of the current turn is in check
+    // returns whether the side of the opposite turn is in check
     public boolean isInCheck() {
-        return (getKing(turn).isInCheck());
+        return (getKing(!turn).isInCheck());
     }
 
     public King getKing(boolean colour) {
@@ -230,7 +230,8 @@ public class ChessBoard implements Iterable<ChessHex> {
     }
 
     public boolean isCheckmate() {
-        for (GamePiece pc : getEnemyPieces(!turn)) {
+        if (!getKing(!turn).isInCheck()) return false;
+        for (GamePiece pc : getEnemyPieces(turn)) {
             if (pc.getMovableHexes().size() != 0) return false;
         }
         return true;
@@ -421,9 +422,7 @@ public class ChessBoard implements Iterable<ChessHex> {
     public Set<ChessHex> getThreatenedTiles(boolean colour) {
         Set<ChessHex> ret = new HashSet<>();
         for (GamePiece piece : getEnemyPieces(!colour)) {
-            if (piece.isOnMap()) {
-                ret.addAll(piece.getThreatenedHexes());
-            }
+            ret.addAll(piece.getThreatenedHexes());
         }
 
         return ret;

@@ -62,7 +62,7 @@ public abstract class GamePiece implements Observer {
     }
 
     // EFFECTS: If moving this piece to each possible move results in a check, remove it from given list
-    public void managePins(Set<ChessHex> moves) {
+    public void filterChecks(Set<ChessHex> moves) {
         ChessBoard cb = getBoard();
 
         ChessHex orig = getPosition();
@@ -72,8 +72,12 @@ public abstract class GamePiece implements Observer {
             ChessHex newhex = movesIterator.next();
 
             GamePiece newpc = newhex.removePiece();
-            if (newpc != null) newpc.removePosition();
+            if (newpc != null)  {
+                newpc.removePosition();
+                getBoard().getPieces().remove(newpc);
+            }
             setPosition(newhex);
+            orig.removePiece();
 
             boolean shouldRemove = false;
             if (cb.getKing(colour).isInCheck()) {
@@ -84,7 +88,9 @@ public abstract class GamePiece implements Observer {
             if (newpc != null) {
                 newhex.setPiece(newpc);
                 newpc.setPosition(newhex);
+                getBoard().getPieces().add(newpc);
             }
+
             if (shouldRemove) movesIterator.remove();
         }
     }
@@ -151,7 +157,8 @@ public abstract class GamePiece implements Observer {
         return hasMoved;
     }
 
-    public void move() {
+    public void move(ChessHex newPosition) {
         hasMoved = true;
+        setPosition(newPosition);
     }
 }

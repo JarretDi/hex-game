@@ -38,6 +38,8 @@ public class King extends GamePiece {
             moveable.remove(hex);
         }
 
+        filterChecks(moveable);
+
         return moveable;
     }
 

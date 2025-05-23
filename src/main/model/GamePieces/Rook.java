@@ -32,8 +32,8 @@ public class Rook extends GamePiece {
     public Set<ChessHex> getMovableHexes() {
         Set<ChessHex> ret = getBoard().getAdjacentLines(getPosition(), false);
         
-        filterCriticals(ret);
-        managePins(ret);
+        //filterCriticals(ret);
+        filterChecks(ret);
 
         return ret;
     }

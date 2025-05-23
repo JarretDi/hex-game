@@ -38,8 +38,8 @@ public class Queen extends GamePiece {
 
         adj.addAll(dia);
 
-        filterCriticals(adj);
-        managePins(adj);
+        //filterCriticals(adj);
+        filterChecks(adj);
 
         return adj;
     }

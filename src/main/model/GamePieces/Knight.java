@@ -55,8 +55,8 @@ public class Knight extends GamePiece {
             }
         }
 
-        filterCriticals(ret);
-        managePins(ret);
+        //filterCriticals(ret);
+        filterChecks(ret);
 
         return ret;
     }

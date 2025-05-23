@@ -10,67 +10,95 @@ import main.model.Board.ChessBoard;
 import main.model.Board.ChessHex;
 
 public class Pawn extends GamePiece {
-    private int[] forwardVector;
-    private int[] rightCapture;
-    private int[] leftCapture;
+    private boolean enpassant;
 
     // Constructs an unmoved pawn at the given position with the given colour
     public Pawn(boolean colour, ChessHex position) {
         super(colour, position);
 
-        forwardVector = getColour() ? ChessBoard.VECTOR_ADJ_N : ChessBoard.VECTOR_ADJ_S;
-        rightCapture = getColour() ? ChessBoard.VECTOR_ADJ_NE : ChessBoard.VECTOR_ADJ_SE;
-        leftCapture  = getColour() ? ChessBoard.VECTOR_ADJ_NW : ChessBoard.VECTOR_ADJ_SW;
-        
         try {
-                    if (getColour() == GamePiece.WHITE) {
-                        image = ImageIO.read(new File("./src/data/pieces/white-pawn.png"));
-                    } else {
-                        image = ImageIO.read(new File("./src/data/pieces/black-pawn.png"));
-                    }
-                } catch (Exception e) {
-                    // Really should not have got here
-                }
+            if (getColour() == GamePiece.WHITE) {
+                image = ImageIO.read(new File("./src/data/pieces/white-pawn.png"));
+            } else {
+                image = ImageIO.read(new File("./src/data/pieces/black-pawn.png"));
             }
-        
+        } catch (Exception e) {
+            // Really should not have got here
+        }
+    }
+
+    // copy constructor
     public Pawn(Pawn other, ChessHex position) {
         super(other, position);
 
-        forwardVector = other.forwardVector;
-        rightCapture = other.rightCapture;
-        leftCapture = other.leftCapture;
-
         image = other.image;
+        enpassant = other.enpassant;
+    }
+
+    private int[] getForwardVector() {
+        return getColour() ? ChessBoard.VECTOR_ADJ_N : ChessBoard.VECTOR_ADJ_S;
+    }
+
+    private int[] getRightCapture() {
+        return getColour() ? ChessBoard.VECTOR_ADJ_NE : ChessBoard.VECTOR_ADJ_SE;
+    }
+
+    private int[] getLeftCapture() {
+        return getColour() ? ChessBoard.VECTOR_ADJ_NW : ChessBoard.VECTOR_ADJ_SW;
+    }
+
+    private int[] getRightEnPassant() {
+        return getColour() ? ChessBoard.VECTOR_ADJ_SW : ChessBoard.VECTOR_ADJ_NW;
+    }
+
+    private int[] getLeftEnPassant() {
+        return getColour() ? ChessBoard.VECTOR_ADJ_SE : ChessBoard.VECTOR_ADJ_NE;
+    }
+
+    private int[] getBehind() {
+        return getColour() ? ChessBoard.VECTOR_ADJ_S : ChessBoard.VECTOR_ADJ_N;
     }
 
     @Override
     public Set<ChessHex> getMovableHexes() {
         Set<ChessHex> ret = new HashSet<>();
 
-        ChessHex tileAhead = getPosition().getBoard().getTile(ChessBoard.addV(getPosition().getCoords(), forwardVector));
+        ChessHex tileAhead = getBoard()
+                .getTile(ChessBoard.addV(getPosition().getCoords(), getForwardVector()));
         if (!tileAhead.containsPiece()) {
             ret.add(tileAhead);
         }
 
         if (!hasMoved()) {
-            ChessHex tile2Ahead = getPosition().getBoard().getTile(ChessBoard.addV(tileAhead.getCoords(), forwardVector));
+            ChessHex tile2Ahead = getBoard()
+                    .getTile(ChessBoard.addV(tileAhead.getCoords(), getForwardVector()));
             if (!tileAhead.containsPiece() && tile2Ahead != null && !tile2Ahead.containsPiece()) {
                 ret.add(tile2Ahead);
             }
         }
 
-        ChessHex tileEast = getPosition().getBoard().getTile(ChessBoard.addV(getPosition().getCoords(), rightCapture));
+        ChessHex tileEast = getBoard().getTile(ChessBoard.addV(getPosition().getCoords(), getRightCapture()));
         if (tileEast.containsEnemyPiece(this)) {
             ret.add(tileEast);
         }
 
-        ChessHex tileWest = getPosition().getBoard().getTile(ChessBoard.addV(getPosition().getCoords(), leftCapture));
+        ChessHex tileWest = getBoard().getTile(ChessBoard.addV(getPosition().getCoords(), getLeftCapture()));
         if (tileWest.containsEnemyPiece(this)) {
             ret.add(tileWest);
         }
 
-        filterCriticals(ret);
-        managePins(ret);
+        ChessHex enPassantEast = getBoard().getTile(ChessBoard.addV(getPosition().getCoords(), getLeftEnPassant()));
+        if (enPassantEast.containsEnemyPiece(this) && enPassantEast.getPiece().getType() == "p" && ((Pawn)enPassantEast.getPiece()).enPassant()) {
+            ret.add(tileEast);
+        }
+
+        ChessHex enPassantWest = getBoard().getTile(ChessBoard.addV(getPosition().getCoords(), getRightEnPassant()));
+        if (enPassantWest.containsEnemyPiece(this) && enPassantWest.getPiece().getType() == "p" && ((Pawn)enPassantWest.getPiece()).enPassant()) {
+            ret.add(tileWest);
+        }
+
+        // filterCriticals(ret);
+        filterChecks(ret);
 
         return ret;
     }
@@ -79,8 +107,8 @@ public class Pawn extends GamePiece {
     public Set<ChessHex> getThreatenedHexes() {
         Set<ChessHex> ret = new HashSet<>();
 
-        ChessHex tileEast = getPosition().getBoard().getTile(ChessBoard.addV(getPosition().getCoords(), rightCapture));
-        ChessHex tileWest = getPosition().getBoard().getTile(ChessBoard.addV(getPosition().getCoords(), leftCapture));
+        ChessHex tileEast = getPosition().getBoard().getTile(ChessBoard.addV(getPosition().getCoords(), getRightCapture()));
+        ChessHex tileWest = getPosition().getBoard().getTile(ChessBoard.addV(getPosition().getCoords(), getLeftCapture()));
 
         ret.add(tileEast);
         ret.add(tileWest);
@@ -125,11 +153,36 @@ public class Pawn extends GamePiece {
 
     @Override
     public void update(Object obj, String msg) {
+        if (getPosition() == null) return;
         super.update(obj, msg);
 
         if (msg.contains("promote") && (((Pawn) obj).equals(this))) {
             promote(msg);
         }
+        if (msg == "Piece moved") {
+            GamePiece pc = (GamePiece) obj;
+            if (pc.getType() != "p" || (pc.getType() == "p" && !((Pawn) pc).equals(this))) {
+                enpassant = false;
+            } 
+            if (pc.getType() == "p") {
+                if (pc.getPosition().equals(getBoard().getTile(ChessBoard.addV(getPosition().getCoords(), getBehind())))) {
+                    getBoard().getPieces().remove(this);
+                    getBoard().getCapturedPieces().add(this);
+                    getPosition().removePiece();
+                    removePosition();
+                }
+            }
+
+        }
+    }
+
+    @Override
+    public void move(ChessHex newPosition) {
+        ChessHex orig = getPosition();
+        if (ChessBoard.sameVector(ChessBoard.addV(orig.getCoords(), ChessBoard.multV(getForwardVector(), 2)), newPosition.getCoords())) {
+            enpassant = true;
+        }
+        super.move(newPosition);
     }
 
     private void promote(String msg) {
@@ -138,7 +191,7 @@ public class Pawn extends GamePiece {
         removePosition();
         cb.getPieces().remove(this);
 
-        switch(msg) {
+        switch (msg) {
             case "Q promote":
                 cb.getPieces().add(new Queen(getColour(), pos));
                 break;
@@ -152,6 +205,10 @@ public class Pawn extends GamePiece {
                 cb.getPieces().add(new Bishop(getColour(), pos));
                 break;
         }
+    }
+
+    public boolean enPassant() {
+        return enpassant;
     }
 
     @Override

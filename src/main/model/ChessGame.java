@@ -127,8 +127,9 @@ public class ChessGame extends Observable {
             isCapture = true;
         }
 
-        piece.setPosition(newPosition);
-        piece.move();
+        
+        piece.move(newPosition);
+        notifyObservers(piece, "Piece moved");
         selectPiece(null);
 
         promote = checkPromotions(piece, newPosition);
@@ -138,6 +139,7 @@ public class ChessGame extends Observable {
         }
         if (cb.isCheckmate()) {
             isCheckmate = true;
+            JOptionPane.showInternalMessageDialog(null, "Checkmate!");
             isCheck = false;
             notifyObservers(this, "Checkmate");
         }
