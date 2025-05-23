@@ -88,12 +88,12 @@ public class Pawn extends GamePiece {
         }
 
         ChessHex enPassantEast = getBoard().getTile(ChessBoard.addV(getPosition().getCoords(), getLeftEnPassant()));
-        if (enPassantEast.containsEnemyPiece(this) && enPassantEast.getPiece().getType() == "p" && ((Pawn)enPassantEast.getPiece()).enPassant()) {
+        if (enPassantEast != null && enPassantEast.containsEnemyPiece(this) && enPassantEast.getPiece().getType() == "p" && ((Pawn)enPassantEast.getPiece()).enPassant()) {
             ret.add(tileEast);
         }
 
         ChessHex enPassantWest = getBoard().getTile(ChessBoard.addV(getPosition().getCoords(), getRightEnPassant()));
-        if (enPassantWest.containsEnemyPiece(this) && enPassantWest.getPiece().getType() == "p" && ((Pawn)enPassantWest.getPiece()).enPassant()) {
+        if (enPassantWest != null && enPassantWest.containsEnemyPiece(this) && enPassantWest.getPiece().getType() == "p" && ((Pawn)enPassantWest.getPiece()).enPassant()) {
             ret.add(tileWest);
         }
 
@@ -153,7 +153,6 @@ public class Pawn extends GamePiece {
 
     @Override
     public void update(Object obj, String msg) {
-        if (getPosition() == null) return;
         super.update(obj, msg);
 
         if (msg.contains("promote") && (((Pawn) obj).equals(this))) {
