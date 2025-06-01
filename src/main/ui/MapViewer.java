@@ -15,6 +15,7 @@ public class MapViewer extends JFrame implements WindowListener {
 
     private JLabel statusLabel;
     private BoardPanel boardUI;
+    private BoardClock boardClock;
 
     public MapViewer(ChessGame cg) {
         super("Hexagon Chess");
@@ -28,6 +29,10 @@ public class MapViewer extends JFrame implements WindowListener {
         add(boardUI, BorderLayout.CENTER);
         addWindowListener(this);
         boardUI.setFocusable(true);
+
+        boardClock = new BoardClock(cg);
+        boardClock.setTimeControl(1, 0);
+        add(boardClock, BorderLayout.EAST);
 
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
 

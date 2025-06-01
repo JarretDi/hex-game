@@ -101,6 +101,10 @@ public class ChessGame extends Observable {
         }
     }
 
+    public void addObserver(Observer ob) {
+        observers.add(ob);
+    }
+
     // MODIFIES: ChessBoard
     // EFFECTS: moves a given piece to a specified hex
     // if postion.containsEnemyPiece(piece) captures it, removing it from pieces

@@ -6,6 +6,7 @@ import java.util.Set;
 
 import main.model.Board.ChessHex;
 import main.model.GamePieces.GamePiece;
+import main.model.GamePieces.Pawn;
 
 public abstract class Observable {
     protected static Set<Observer> observers = new HashSet<>();
@@ -16,13 +17,13 @@ public abstract class Observable {
             Observer obs = it.next();
 
             // Clean up observer list to be safe
-            if (it instanceof GamePiece && !((GamePiece) obs).isOnMap()) {
+            if (obs instanceof GamePiece && ((GamePiece) obs).getPosition() == null) {
                 it.remove();
-            } else if (it instanceof ChessHex && ((ChessHex) obs).getBoard() == null) {
+            } else if (obs instanceof ChessHex && ((ChessHex) obs).getBoard() == null) {
                 it.remove();
+            } else {
+                obs.update(obj, msg);
             }
-
-            obs.update(obj, msg);
         }
     }
 }

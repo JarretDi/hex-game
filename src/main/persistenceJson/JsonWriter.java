@@ -1,7 +1,9 @@
-package main.modelOldRpg.persistence;
+package main.persistenceJson;
 
 import org.json.JSONObject;
 
+import main.model.Board.ChessBoard;
+import main.model.Logger.BoardLogger;
 import main.modelOldRpg.Inventory.Inventory;
 
 import java.io.*;
@@ -27,9 +29,9 @@ public class JsonWriter {
     }
 
     // MODIFIES: this
-    // EFFECTS: writes JSON representation of workroom to file
-    public void write(Inventory inventory) {
-        JSONObject json = inventory.toJson();
+    // EFFECTS: writes JSON representation of game history to file
+    public void write(ChessBoard cb) {
+        JSONObject json = BoardLogger.getInstance().toJson();
         saveToFile(json.toString(TAB));
     }
 

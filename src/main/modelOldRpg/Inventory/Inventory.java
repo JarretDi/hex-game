@@ -10,7 +10,7 @@ import main.logger.EventLog;
 import main.modelOldRpg.Character.GameCharacter;
 import main.modelOldRpg.Inventory.exceptions.InvalidSortException;
 import main.modelOldRpg.Inventory.items.Item;
-import main.modelOldRpg.persistence.Writable;
+import main.persistenceJson.Writable;
 
 // Represents the inventory of a character, consisting of an
 // arbitrary amount of items as well as the count of each identical element

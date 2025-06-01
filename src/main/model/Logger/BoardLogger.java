@@ -2,6 +2,9 @@ package main.model.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.json.JSONObject;
+
 import main.model.Board.ChessBoard;
 
 public class BoardLogger {
@@ -44,5 +47,9 @@ public class BoardLogger {
 
     public void addEvent(BoardEvent event) {
         events.add(event);
+    }
+
+    public JSONObject toJson() {
+        return null;
     }
 }

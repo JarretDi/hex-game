@@ -25,7 +25,7 @@ import main.model.Logger.BoardLogger;
 
 public class BoardPanel extends JPanel implements MouseListener, KeyListener {
     private ChessGame cg;
-    private ChessBoard cb;
+    private ChessBoard cb; // Note: this isn't always the same as the board that the game has
     private Image backgroundImage;
     private int turnOffset;
     private final int hexRadius = 42;

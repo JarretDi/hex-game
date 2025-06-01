@@ -1,7 +1,10 @@
 package main.model.Logger;
 
+import org.json.JSONObject;
+
 import main.model.Board.ChessHex;
 import main.model.GamePieces.GamePiece;
+import main.persistenceJson.Writable;
 
 public class BoardEvent {
     private GamePiece piece;

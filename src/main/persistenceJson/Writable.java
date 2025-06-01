@@ -1,4 +1,4 @@
-package main.modelOldRpg.persistence;
+package main.persistenceJson;
 
 import org.json.JSONObject;
 
